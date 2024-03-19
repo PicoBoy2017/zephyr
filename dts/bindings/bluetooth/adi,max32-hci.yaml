@@ -1,0 +1,16 @@
+# Copyright 2024 Analog Devices, Inc.
+#
+# SPDX-License-Identifier: Apache-2.0
+
+description: |
+    Bluetooth HCI for ADI MAX32 devices
+
+compatible: "adi,max32-hci"
+
+include: bt-hci.yaml
+
+properties:
+  bt-hci-name:
+    default: "BT MAX32"
+  bt-hci-bus:
+    default: "virtual"

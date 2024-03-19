@@ -20,6 +20,7 @@
 		zephyr,shell-uart = &uart0;
 		zephyr,sram = &sram2;
 		zephyr,flash = &flash0;
+		zephyr,bt-hci = &bt_hci_max32;
 	};
 
 	leds {
@@ -195,4 +196,8 @@
 		wp-gpios = <&gpio0 8 (GPIO_ACTIVE_HIGH | MAX32_GPIO_VSEL_VDDIOH)>;
 		status = "okay";
 	};
+};
+
+&bt_hci_max32 {
+	status = "okay";
 };

@@ -12,4 +12,14 @@ config NUM_IRQS
 	default 110 if SOC_MAX32655_M4
 	default 60 if SOC_MAX32655_RV32
 
+if BT
+
+config FPU
+	default y
+
+config MAIN_STACK_SIZE
+	default 1536
+
+endif # BT
+
 endif # SOC_MAX32655

@@ -155,6 +155,16 @@ config BT_DA1469X
 	  Bluetooth HCI driver for communication with CMAC core
 	  on DA1469x MCU.
 
+config BT_MAX32
+	bool "Maxim MAX32XXX HCI driver"
+	default y
+	select ENTROPY_GENERATOR
+	select FLASH
+	depends on DT_HAS_ADI_MAX32_HCI_ENABLED
+	help
+	  This driver uses direct fn calls in a "Single-chip configuration" to
+	  connect to the MAX32 Bluetooth controller.
+
 config BT_NXP
 	bool
 	default y

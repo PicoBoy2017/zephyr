@@ -18,6 +18,7 @@
 		 zephyr,sram = &sram2;
 		 zephyr,flash = &m4_partition;
 		 zephyr,code-rv32-partition = &rv32_partition;
+		 zephyr,bt-hci = &bt_hci_max32;
 	 };
 };
 
@@ -123,5 +124,9 @@
 };
 
 &spi0_cs0_flash {
+	status = "okay";
+};
+
+&bt_hci_max32 {
 	status = "okay";
 };
