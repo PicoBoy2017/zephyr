@@ -130,6 +130,8 @@ Below interfaces are supported by Zephyr on MAX32690EVKIT.
 +-----------+------------+-------------------------------------+
 | RTC       | on-chip    | Real Time Clock                     |
 +-----------+------------+-------------------------------------+
+| USB       | on-chip    | usb device                          |
++-----------+------------+-------------------------------------+
 
 
 Connections and IOs
