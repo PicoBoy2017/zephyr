@@ -22,4 +22,4 @@ supported:
   - flash
   - rtc
 ram: 128
-flash: 512
+flash: 256
