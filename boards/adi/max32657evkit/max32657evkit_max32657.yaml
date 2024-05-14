@@ -10,5 +10,6 @@ toolchain:
 supported:
   - serial
   - watchdog
+  - dma
 ram: 128
 flash: 160
