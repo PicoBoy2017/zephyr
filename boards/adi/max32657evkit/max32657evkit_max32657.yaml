@@ -9,5 +9,6 @@ toolchain:
   - xtools
 supported:
   - serial
+  - watchdog
 ram: 128
 flash: 160
