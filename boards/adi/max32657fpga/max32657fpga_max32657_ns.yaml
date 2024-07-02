@@ -15,5 +15,6 @@ supported:
   - trng
   - i3c
   - pwm
+  - counter
 ram: 128
 flash: 192
