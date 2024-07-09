@@ -110,6 +110,8 @@ Below interfaces are supported by Zephyr on MAX32672EVKIT.
 +-----------+------------+-------------------------------------+
 | Flash     | on-chip    | flash                               |
 +-----------+------------+-------------------------------------+
+| RTC       | on-chip    | Real Time Clock                     |
++-----------+------------+-------------------------------------+
 
 
 Connections and IOs
