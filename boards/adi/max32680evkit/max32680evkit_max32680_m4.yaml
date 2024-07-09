@@ -19,5 +19,6 @@ supported:
   - counter
   - w1
   - flash
+  - rtc
 ram: 128
 flash: 512
