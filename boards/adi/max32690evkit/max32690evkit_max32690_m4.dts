@@ -51,6 +51,7 @@
 		led1 = &green_led;
 		sw0 = &pb0;
 		watchdog0 = &wdt0;
+		rtc = &rtc;
 	 };
 
 	mipi_dbi {
@@ -171,4 +172,9 @@
 	pinctrl-names = "default";
 	bitrate = <500000>;
 	sample-point = <800>;
+};
+
+&rtc {
+	status = "okay";
+	alarms-count = <1>;
 };
