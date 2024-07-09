@@ -116,6 +116,8 @@ Below interfaces are supported by Zephyr on MAX32672FTHR.
 +-----------+------------+-------------------------------------+
 | Flash     | on-chip    | flash                               |
 +-----------+------------+-------------------------------------+
+| RTC       | on-chip    | Real Time Clock                     |
++-----------+------------+-------------------------------------+
 
 
 Connections and IOs
