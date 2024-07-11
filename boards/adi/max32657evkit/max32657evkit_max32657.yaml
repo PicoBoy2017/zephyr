@@ -14,5 +14,6 @@ supported:
   - trng
   - pwm
   - gpio
+  - spi
 ram: 128
 flash: 160
