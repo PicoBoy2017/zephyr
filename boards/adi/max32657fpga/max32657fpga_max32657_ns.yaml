@@ -16,5 +16,6 @@ supported:
   - i3c
   - pwm
   - counter
+  - rtc
 ram: 128
 flash: 192
