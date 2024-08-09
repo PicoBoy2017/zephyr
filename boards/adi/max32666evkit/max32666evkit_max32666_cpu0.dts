@@ -58,6 +58,7 @@
 		sw0 = &pb1;
 		sw1 = &pb2;
 		watchdog0 = &wdt0;
+		rtc = &rtc;
 	};
 };
 
@@ -109,4 +110,9 @@
 &w1 {
 	pinctrl-0 = <&owm_io_p0_4 &owm_pe_p0_5>;
 	pinctrl-names = "default";
+};
+
+&rtc {
+	status = "okay";
+	alarms-count = <1>;
 };
