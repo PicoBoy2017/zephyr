@@ -54,6 +54,7 @@
 		led2 = &led3;
 		sw0 = &pb1;
 		watchdog0 = &wdt0;
+		rtc = &rtc;
 	};
 
 	/* Used for accessing other pins */
@@ -128,4 +129,9 @@
 &w1 {
 	pinctrl-0 = <&owm_io_p0_12>;
 	pinctrl-names = "default";
+};
+
+&rtc {
+	status = "okay";
+	alarms-count = <1>;
 };
