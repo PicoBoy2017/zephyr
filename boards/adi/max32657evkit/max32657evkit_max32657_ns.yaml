@@ -12,5 +12,6 @@ supported:
   - watchdog
   - dma
   - trng
+  - pwm
 ram: 128
 flash: 288
