@@ -14,5 +14,6 @@ supported:
   - watchdog
   - trng
   - i3c
+  - pwm
 ram: 128
 flash: 192
