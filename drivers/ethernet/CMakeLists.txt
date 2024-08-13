@@ -40,6 +40,7 @@ zephyr_library_sources_ifdef(CONFIG_ETH_IVSHMEM 	eth_ivshmem.c eth_ivshmem_queue
 zephyr_library_sources_ifdef(CONFIG_ETH_ADIN2111	eth_adin2111.c)
 zephyr_library_sources_ifdef(CONFIG_ETH_LAN865X	        eth_lan865x.c oa_tc6.c)
 zephyr_library_sources_ifdef(CONFIG_ETH_XMC4XXX		eth_xmc4xxx.c)
+zephyr_library_sources_ifdef(CONFIG_ETH_AD3306		eth_ad3306.c oa_tc6.c)
 zephyr_library_sources_ifdef(CONFIG_ETH_TEST		eth_test.c)
 
 if(CONFIG_ETH_NXP_S32_NETC)
