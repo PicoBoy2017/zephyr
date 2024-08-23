@@ -338,7 +338,8 @@ manifest:
       groups:
         - crypto
     - name: trusted-firmware-m
-      revision: 8134106ef9cb3df60e8bd22b172532558e936bd2
+      remote: adi-innersource
+      revision: b9605edebb73987cc3784e91e638bb4177b7dfbe
       path: modules/tee/tf-m/trusted-firmware-m
       groups:
         - tee
