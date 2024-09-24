@@ -5067,6 +5067,14 @@ West:
   labels:
     - "area: OpenThread"
 
+"West project: packetcraft-adi":
+  status: maintained
+  maintainers:
+    - MaureenHelm
+  files: []
+  labels:
+    - "platform: ADI Bluetooth"
+
 "West project: percepio":
   status: maintained
   maintainers:

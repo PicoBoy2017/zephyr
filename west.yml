@@ -25,6 +25,8 @@ manifest:
       url-base: https://github.com/BabbleSim
     - name: analogdevicesinc
       url-base: https://github.com/analogdevicesinc
+    - name: adi-innersource
+      url-base: https://github.com/adi-innersource
 
   group-filter: [-babblesim, -optional]
 
@@ -140,7 +142,7 @@ manifest:
         - fs
     - name: hal_adi
       remote: analogdevicesinc
-      revision: 203fc1e6b30583507646a7efb3679fd267e31c06
+      revision: 59d2fc29fa3ad526491ed77cb5f6cb4128aaa7da
       path: modules/hal/adi
       groups:
         - hal
@@ -311,6 +313,12 @@ manifest:
     - name: openthread
       revision: 2aeb8b833ba760ec29d5f340dd1ce7bcb61c5d56
       path: modules/lib/openthread
+    - name: packetcraft-adi
+      remote: adi-innersource
+      revision: v0.0.2+49cd193c.20241114-libs
+      path: modules/hal/packetcraft-adi
+      groups:
+        - hal
     - name: percepio
       path: modules/debug/percepio
       revision: b68d17993109b9bee6b45dc8c9794e7b7bce236d
