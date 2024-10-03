@@ -128,6 +128,8 @@ Below interfaces are supported by Zephyr on MAX32666FTHR.
 +-----------+------------+-------------------------------------+
 | RTC       | on-chip    | Real Time Clock                     |
 +-----------+------------+-------------------------------------+
+| SDHC      | on-chip    | sd host controller                  |
++-----------+------------+-------------------------------------+
 
 Connections and IOs
 ===================
