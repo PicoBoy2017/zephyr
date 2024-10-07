@@ -31,6 +31,13 @@ config FLASH_LOAD_OFFSET
 config FLASH_LOAD_SIZE
 	default $(dt_chosen_reg_size_hex,$(DT_CHOSEN_Z_CODE_PARTITION))
 
+choice TFM_PROFILE_TYPE
+	default TFM_PROFILE_TYPE_SMALL
+endchoice
+
+config TFM_PARTITION_PROTECTED_STORAGE
+	default n
+
 endif # BOARD_MAX32657FPGA_MAX32657_NS
 
 endif # BOARD_MAX32657FPGA
