@@ -13,5 +13,6 @@ supported:
   - dma
   - watchdog
   - trng
+  - i3c
 ram: 128
 flash: 192
