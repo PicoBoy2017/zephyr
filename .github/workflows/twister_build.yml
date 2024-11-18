@@ -150,7 +150,7 @@ jobs:
           test -d github/home/.cache/ccache && rm -rf /github/home/.cache/ccache && mv github/home/.cache/ccache /github/home/.cache/ccache
           ccache -M 10G -s
 
-      - if: github.event_name == 'push' && !inputs.is_build_only
+      - if: github.event_name == 'push'
         name: Run Tests with Twister (Push)
         run: |
           export ZEPHYR_BASE=${PWD}
