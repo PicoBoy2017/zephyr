@@ -29,6 +29,7 @@ jobs:
       image: ghcr.io/zephyrproject-rtos/ci-repo-cache:v0.26.13.20240601
       options: --entrypoint /bin/bash
       zephyr_sdk_install_dir: /opt/toolchains/zephyr-sdk-0.16.8
+    secrets: inherit
 
   twister-build:
     strategy:
