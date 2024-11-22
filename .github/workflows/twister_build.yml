@@ -150,7 +150,7 @@ jobs:
           test -d github/home/.cache/ccache && rm -rf /github/home/.cache/ccache && mv github/home/.cache/ccache /github/home/.cache/ccache
           ccache -M 10G -s
 
-      - if: github.event_name == 'push'
+      - if: github.event_name == 'push' && !inputs.is_build_only
         name: Run Tests with Twister (Push)
         run: |
           export ZEPHYR_BASE=${PWD}
@@ -160,6 +160,20 @@ jobs:
             ./scripts/zephyr_module.py --twister-out module_tests.args
             if [ -s module_tests.args ]; then
               ./scripts/twister +module_tests.args --outdir module_tests ${TWISTER_COMMON} ${PUSH_OPTIONS}
+            fi
+          fi
+
+      - if: github.event_name == 'push' && inputs.is_build_only
+        name: Run Tests with Twister Build Only (Push)
+        run: |
+          rm -f testplan.json
+          export ZEPHYR_BASE=${PWD}
+          export ZEPHYR_TOOLCHAIN_VARIANT=zephyr
+          ./scripts/twister -p ${{ inputs.board }} ${TWISTER_COMMON} --clobber-output -M --build-only --show-footprint
+          if [ "${{ matrix.subset }}" = "1" -a ${{ needs.twister-build-prep.outputs.fullrun }} = 'True' ]; then
+            ./scripts/zephyr_module.py --twister-out module_tests.args
+            if [ -s module_tests.args ]; then
+              ./scripts/twister +module_tests.args --outdir module_tests ${TWISTER_COMMON} --clobber-output -M --build-only --show-footprint
             fi
           fi
 
