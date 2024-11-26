@@ -103,6 +103,7 @@ jobs:
           rm -fr ".git/rebase-apply"
           rm -fr ".git/rebase-merge"
           git rebase origin/${BASE_REF}
+          git clean -f -d
           git log  --pretty=oneline | head -n 10
           git config --global url."https://${generatedAccessToken}:${generatedAccessToken}@github.com/".insteadOf "https://github.com/"
           west init -l . || true
