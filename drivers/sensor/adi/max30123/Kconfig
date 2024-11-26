@@ -1,0 +1,13 @@
+# Single Channel, Ultra-Low Power Electrochemical Sensor AFE
+
+# Copyright (c) 2024 Analog Devices, Inc.
+#
+# SPDX-License-Identifier: Apache-2.0
+
+config MAX30123
+	bool "MAX30123 Electrochemical Sensor"
+	default y
+	depends on DT_HAS_ADI_MAX30123_ENABLED
+	select SPI
+	help
+	  Enable SPI-based driver for MAX30123 Electrochemical Sensor.

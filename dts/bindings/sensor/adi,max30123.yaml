@@ -1,0 +1,1259 @@
+# Copyright (c) 2024 Analog Devices Inc.
+#
+# SPDX-License-Identifier: Apache-2.0
+
+description: MAX30123 electrochemical sensor, accessed through SPI bus
+
+compatible: "adi,max30123"
+
+include: [sensor-device.yaml, spi-device.yaml]
+
+properties:
+  fifo-a-full:
+    description: |
+          How many new samples can be written to the FIFO before the A_FULL interrupt is asserted.
+          Default is power on reset value.
+    type: int
+    default: 127
+
+  fifo-ro:
+    description: |
+          Set this option to enable FIFO rollover.
+            false # rollover disabled, fifo will stop pushing data on full and new samples are
+                    lost.
+            true # rollover enabled, old smaples are overwritten.
+    type: boolean
+
+  auto-clk-div:
+    description: |
+          Programs the Sequencer Sample Rate [SSR] (min=128, max=16777215).
+          Default is power on reset value.
+          SSR = 32768 / AUTO_CLK_DIV[23:0].
+    type: int
+    default: 256
+
+  chrono-clk-div:
+    description: |
+          Programs the Chronoamperometry Sample Rate [ISR] (min=128, max=65532).
+          Default is power on reset value.
+          ISR = 32768 / CHRONO_CLK_DIV[15:0].
+    type: int
+    default: 256
+
+  daca-code:
+    description: |
+          Sets the output voltage of DACA in mV (min=0mV, max=1,023mV).
+          Default is power on reset value.
+    type: int
+    default: 0
+
+  dacb-code:
+    description: |
+          Sets the output voltage of DACA in mV (min=0mV, max=1,023mV).
+          Default is power on reset value.
+    type: int
+    default: 0
+
+  dac-pedestal:
+    description: |
+          Sets the voltage offset of DAC A and B. Default is power on reset value.
+            0 # 0mV
+            1 # 128mV
+            2 # Reserved
+            3 # 512mV
+    type: int
+    default: 0
+
+  dac-enable:
+    description: |
+          Enables DAC A and B output.
+            false # DAC disabled
+            true # DAC enabled
+    type: boolean
+
+  we1-amp-enable:
+    description: |
+          Enables the working electrode amplifier.
+            false # Disable sensor working amplifier
+            true # Enable sensor working amplifier
+    type: boolean
+
+  we1-dac-mx:
+    description: |
+          Select which DAC is connected to the working amplifier non-inverting input.
+          Default is power on reset value.
+            0 # DACA
+            1 # DACB
+            2 # Reserved
+            3 # Reserved
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+
+  we1-rs:
+    description: |
+          Sets whether WE1 amplifier is connected directly to WE1 pin or 60kOhm resistor.
+          Default is power on reset value.
+            false # WE1 amplifier connected directly to WE1 pin
+            true # WE1 amplifier connected to 60kOhm resistor to the WE1 output pin
+    type: boolean
+
+  we1-swa:
+    description: |
+          Analog switch between the sensor working amplifier output and WE.
+            false # Open switch between sensor working amplifier output and WE.
+                    Current measurement possible on WE1.
+            true # Close analog switch between sensor working amplifier output and WE1 pin.
+                   Bypasses the NMOS transistor. Disables current measurement on WE1.
+    type: boolean
+
+  we1-swb:
+    description: |
+          Analog switch between the working amplifier inverting input and WE1 pin.
+            false # Open switch between working amplifier inverting input and WE1.
+            true # Close switch between sensor working amplifier inverting input and WE1 pin.
+    type: boolean
+
+  we1-sra:
+    description: |
+          Analog switch between sensor working amplifier inverting input and RE1.
+            false # Opens the analog switch between sensor working amplifier inverting input
+                    and RE1.
+            true # Closes the analog switch between  sensor working amplifier inverting input
+                   and the RE1 pin.
+    type: boolean
+
+  we1-ios_mode:
+    description: |
+          Offset current on we1 setting.
+            false # Enables the offset current on WE1 only during ADC conversion.
+            true # Enables the offset current on WE1 always.
+    type: boolean
+
+  we1-offset-sel:
+    description: |
+          Programs sensor offset current for the sensor ADC. Default is power on reset value.
+            0 # 0% offset (unipolar)
+            1 # 10% of the full scale current
+            2 # 20% of the full scale current
+            3 # 50% of the full scale current
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+
+  adc-fs-we1:
+    description: |
+          Sets the ADC full scale current range in nA. Default is power on reset value.
+            0 # 64nA
+            1 # 128nA
+            2 # 256nA
+            3 # 512nA
+            4 # 1024nA
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+
+  ce1-amp-enable:
+    description: |
+          Enables counter amplifier.
+            false # Disable sensor counter amplifier CE1
+            true # Enable sensor counter amplifier CE1
+    type: boolean
+
+  ce1-dac-mx:
+    description: |
+          Selects which DAC is connected to the counter amplifier non-inverting input.
+          Default is power on reset value.
+            0 # DACA
+            1 # DACB
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+
+  ce1-sg:
+    description: |
+          Disconnects the CE1 amplifier from the CE1 pin and shorts the CE1 pin to GND.
+            false # Normal operation
+            true # CE1AMP disconnected and CE1 pin connected to GND
+    type: boolean
+
+  ce1-sc:
+    description: |
+          Analog switch between the sensor counter amplifier inverting input and CE1.
+            false # Opens analog switch between sensor counter amplifier inverting input and CE1.
+            true # Closes analog switch between sensor counter amplifier inverting input and the
+                   sensor CE1 pin.
+    type: boolean
+
+  ce1-srb:
+    description: |
+          Analog switch between sensor counter amplifier inverting input and RE1.
+            false # Opens analog switch between sensor counter amplifier inverting input and RE1.
+            true # Closes analog switch between sensor counter amplifier inverting input and RE1.
+    type: boolean
+
+  gr1-mx:
+    description: |
+          Selects which electrode is connected to the guard amplifier non-inverting input.
+          Default is power on reset value.
+            0 # WE1
+            1 # RE1
+            2 # CE1
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+
+  gr1-enable:
+    description: |
+          Enables the guard ring amplifier.
+            false # Disable guard ring amplifier. Output pulled to GND.
+            true # Enable guard ring amplifier
+    type: boolean
+
+  chrono-amplitude:
+    description: |
+          Step voltage used in chronoamperometry mode in mV (min=0mV, max=31mV).
+          Default is power on reset value.
+    type: int
+    default: 0
+
+  step-smp-a:
+    description: |
+          Sets the number of sample periods of the chronoamperometric voltage step (min=0, max=255).
+          Default is power on reset value.
+    type: int
+    default: 0
+
+  rec-smp-a:
+    description: |
+          Sets the number of sample period of chronoamperometric recovery step (min=0, max=255).
+          Default is power on reset value.
+    type: int
+    default: 0
+
+  chrono-a-offset-sel:
+    description: |
+          Offset current applied for the duration of CHRONO_A measurement.
+          Default is power on reset value.
+            0 # 0% offset (unipolar)
+            1 # 10% of the full scale current
+            2 # 20% of the full scale current
+            3 # 50% of the full scale current
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+
+  adc-fs-chrono-a:
+    description: |
+          Sets the ADC full scale current range in nA. Default is power on reset value.
+            0 # 64nA
+            1 # 128nA
+            2 # 256nA
+            3 # 512nA
+            4 # 1024nA
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 4
+
+  step-smp-b:
+    description: |
+          Sets the number of sample periods of the chronoamperometric voltage step
+          (min=0, max=255). Default is power on reset value.
+    type: int
+    default: 0
+
+  rec-smp-b:
+    description: |
+          Sets the number of sample period of chronoamperometric recovery step
+          (min=0, max=255). Default is power on reset value.
+    type: int
+    default: 0
+
+  chrono-b-offset-sel:
+    description: |
+          Offset current applied for the duration of CHRONO_B measurement.
+          Default is power on reset value.
+            0 # 0% offset (unipolar)
+            1 # 10% of the full scale current
+            2 # 20% of the full scale current
+            3 # 50% of the full scale current
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+
+  adc-fs-chrono-b:
+    description: |
+          Sets the ADC full scale current range in nA. Default is power on reset value.
+            0 # 64nA
+            1 # 128nA
+            2 # 256nA
+            3 # 512nA
+            4 # 1024nA
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 4
+
+  ap-offset-sel:
+    description: |
+          The offset current applied for the duratino of AP measurement sequence.
+          Default is power on reset value.
+            0 # 0% offset (unipolar)
+            1 # 10% of the full scale current
+            2 # 20% of the full scale current
+            3 # 50% of the full scale current
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+
+  adc-fs-ap:
+    description: |
+          Sets the ADC full scale current range in nA. Default is power on reset value.
+            0 # 64nA
+            1 # 128nA
+            2 # 256nA
+            3 # 512nA
+            4 # 1024nA
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 4
+
+  convert:
+    description: |
+          Start data conversions.
+            false # Conversions are stopped
+            true # Enable data conversions
+    type: boolean
+
+  auto:
+    description: |
+          Set manual or sequencer mode.
+            false # Single ADC conversion is started manually
+            true # ADC conversions are continuous
+    type: boolean
+
+  m0-mode:
+    description: |
+          Set measurement mode of M0 ADC. Default is power on reset value.
+            0 # Disabled
+            1 # PSTAT measurement
+            2 # Chrono A measurement
+            3 # Chrono B measurement
+            4 # AP measurement
+            5 # Reserved
+            6 # Temperature measurement
+            7 # System voltage measurement
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+
+  m0-dly:
+    description: |
+          Set the delay from the end of the current measurment to the start of the next
+          enabled measurement (min=0, max=255). Delay=(75+M0_DLY)*TCLK. Where TCLK=1/32768Hz.
+          Default is power on reset value.
+    type: int
+    default: 0
+
+  m1-mode:
+    description: |
+          Set measurement mode of M1 ADC. Default is power on reset value.
+            0 # Disabled
+            1 # PSTAT measurement
+            2 # Chrono A measurement
+            3 # Chrono B measurement
+            4 # AP measurement
+            5 # Reserved
+            6 # Temperature measurement
+            7 # System voltage measurement
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+
+  m1-srd:
+    description: |
+          Sets the sample rate divider + 1 for the sub mode measurement M1.
+          Default is power on reset value.
+            0 # 1
+            1 # 2
+            2 # 3
+            3 # 4
+            4 # 5
+            ...
+            30 # 31
+            31 # 32
+    type: int
+    default: 0
+
+  m1-dly:
+    description: |
+          Set the delay from the end of the current measurment to the start of the next
+          enabled measurement (min=0, max=255). Delay=(75+M1_DLY)*TCLK. Where TCLK=1/32768Hz.
+          Default is power on reset value.
+    type: int
+    default: 0
+
+  m2-mode:
+    description: |
+          Set measurement mode of M2 ADC. Default is power on reset value.
+            0 # Disabled
+            1 # PSTAT measurement
+            2 # Chrono A measurement
+            3 # Chrono B measurement
+            4 # AP measurement
+            5 # Reserved
+            6 # Temperature measurement
+            7 # System voltage measurement
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+
+  m2-srd:
+    description: |
+          Sets the sample rate divider + 1 for the sub mode measurement M2.
+          Default is power on reset value.
+            0 # 1
+            1 # 2
+            2 # 3
+            3 # 4
+            4 # 5
+            ...
+            30 # 31
+            31 # 32
+    type: int
+    default: 0
+
+  m2-dly:
+    description: |
+          Set the delay from the end of the current measurment to the start of the next
+          enabled measurement (min=0, max=255. Delay=(75+M2_DLY)*TCLK. Where TCLK=1/32768Hz.
+          Default is power on reset value.
+    type: int
+    default: 0
+
+  m3-mode:
+    description: |
+          Set measurement mode of M3 ADC. Default is power on reset value.
+            0 # Disabled
+            1 # PSTAT measurement
+            2 # Chrono A measurement
+            3 # Chrono B measurement
+            4 # AP measurement
+            5 # Reserved
+            6 # Temperature measurement
+            7 # System voltage measurement
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+
+  m3-srd:
+    description: |
+          Sets the sample rate divider + 1 for the sub mode measurement M3.
+          Default is power on reset value.
+            0 # 1
+            1 # 2
+            2 # 3
+            3 # 4
+            4 # 5
+            ...
+            30 # 31
+            31 # 32
+    type: int
+    default: 0
+
+  m3-dly:
+    description: |
+          Set the delay from the end of the current measurment to the start of the next
+          enabled measurement (min=0, max=255). Delay=(75+M3_DLY)*TCLK. Where TCLK=1/32768Hz.
+          Default is power on reset value.
+    type: int
+    default: 0
+
+  m4-mode:
+    description: |
+          Set measurement mode of M4 ADC. Default is power on reset value.
+            0 # Disabled
+            1 # PSTAT measurement
+            2 # Chrono A measurement
+            3 # Chrono B measurement
+            4 # AP measurement
+            5 # Reserved
+            6 # Temperature measurement
+            7 # System voltage measurement
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+
+  m4-srd:
+    description: |
+          Sets the sample rate divider + 1 for the sub mode measurement M4.
+          Default is power on reset value.
+            0 # 1
+            1 # 2
+            2 # 3
+            3 # 4
+            4 # 5
+            ...
+            30 # 31
+            31 # 32
+    type: int
+    default: 0
+
+  m4-dly:
+    description: |
+          Set the delay from the end of the current measurment to the start of the next
+          enabled measurement (min=0, max=255). Delay=(75+M4_DLY)*TCLK. Where TCLK=1/32768Hz.
+          Default is power on reset value.
+    type: int
+    default: 0
+
+  m5-mode:
+    description: |
+          Set measurement mode of M5 ADC. Default is power on reset value.
+            0 # Disabled
+            1 # PSTAT measurement
+            2 # Chrono A measurement
+            3 # Chrono B measurement
+            4 # AP measurement
+            5 # Reserved
+            6 # Temperature measurement
+            7 # System voltage measurement
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+
+  m5-dly:
+    description: |
+          Set the delay from the end of the current measurment to the start of the next
+          enabled measurement (min=0, max=255). Delay=(75+M5_DLY)*TCLK. Where TCLK=1/32768Hz.
+          Default is power on reset value.
+    type: int
+    default: 0
+
+  m6-mode:
+    description: |
+          Set measurement mode of M6 ADC. Default is power on reset value.
+            0 # Disabled
+            1 # PSTAT measurement
+            2 # Chrono A measurement
+            3 # Chrono B measurement
+            4 # AP measurement
+            5 # Reserved
+            6 # Temperature measurement
+            7 # System voltage measurement
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+
+  m6-dly:
+    description: |
+          Set the delay from the end of the current measurment to the start of the next
+          enabled measurement (min=0, max=255). Delay=(75+M6_DLY)*TCLK. Where TCLK=1/32768Hz.
+          Default is power on reset value.
+    type: int
+    default: 0
+
+  m0-i-conv-type:
+    description: |
+          Controls how offset current is handled for measurement m0. Applicable only when PSTAT
+          mode is selected for M0_MODE. Default is power on reset value.
+             M0_I_CONV_TYPE        Description            Number of ADC          ADC Data
+                                                      conversions per sample
+            ----------------|-----------------------|------------------------|---------------
+                    0       |   Offset + signal     |           1            |   Unsigned
+                            |  current measurement  |                        |
+            ----------------|-----------------------|----------------------- |---------------
+                    1       |    Offset current     |           1            |   Unsigned
+                            |    only measurement   |                        |
+            ----------------|-----------------------|------------------------|---------------
+                    2       |  Offset current and   |           2            |   Unsigned
+                            |  signal current meas. |                        |
+            ----------------|-----------------------|------------------------|---------------
+                    3       |   Offset + signal     |           1            | 2's Compliment
+                            |  current measurement  |                        |
+            ----------------|-----------------------|------------------------|---------------
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+
+  m0-v-conv-type:
+    description: |
+          Controls how voltage offset is handled for measurement m0. Applicable only when Voltage
+          mode is selected in M0_MODE. Default is power on reset value.
+               M0_V_CONV_TYPE           Decode              Number of ADC        Data Format
+                                                        conversions per sample
+              ----------------|-----------------------|------------------------|---------------
+                      0       | Offset meas. followed |           2            |   Unsigned
+                              |   by voltage meas.    |                        |
+              ----------------|-----------------------|------------------------|---------------
+                      1       | Offset meas. followed |           1            |   Unsigned
+                              |   by signal + offset  |                        |
+              ----------------|-----------------------|------------------------|---------------
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+
+  m0-conv-time:
+    description: |
+          Set conversion time of the m0 measurement. Default is power on reset value.
+                M0_CONV_TIME    ADC Integration Time [ms]   Filter Type          Mode
+              ----------------|---------------------------|-------------|--------------------
+                      0       |           200             |     CIC     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      1       |           100             |     COI     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      2       |            40             |     CIC     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      3       |            20             |     COI     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      4       |           33.33           |     CIC     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      5       |           16.67           |     COI     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      6       |           2.76            |     CIC     |  Chronoamperometry
+              ----------------|---------------------------|-------------|--------------------
+                      7       |           1.38            |     COI     |  Chronoamperometry
+              ----------------|---------------------------|-------------|--------------------
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+
+  m1-i-conv-type:
+    description: |
+          Controls how offset current is handled for measurement m1. Applicable only when PSTAT
+          mode is selected for M1_MODE. Default is power on reset value.
+             M1_I_CONV_TYPE        Description            Number of ADC          ADC Data
+                                                      conversions per sample
+            ----------------|-----------------------|------------------------|---------------
+                    0       |   Offset + signal     |           1            |   Unsigned
+                            |  current measurement  |                        |
+            ----------------|-----------------------|------------------------|---------------
+                    1       |    Offset current     |           1            |   Unsigned
+                            |    only measurement   |                        |
+            ----------------|-----------------------|------------------------|---------------
+                    2       |  Offset current and   |           2            |   Unsigned
+                            |  signal current meas. |                        |
+            ----------------|-----------------------|------------------------|---------------
+                    3       |   Offset + signal     |           1            | 2's Compliment
+                            |  current measurement  |                        |
+            ----------------|-----------------------|------------------------|---------------
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+
+  m1-v-conv-type:
+    description: |
+          Controls how voltage offset is handled for measurement m1. Applicable only when Voltage
+          mode is selected in M1_MODE. Default is power on reset value.
+               M1_V_CONV_TYPE           Decode              Number of ADC        Data Format
+                                                        conversions per sample
+              ----------------|-----------------------|------------------------|---------------
+                      0       | Offset meas. followed |           2            |   Unsigned
+                              |   by voltage meas.    |                        |
+              ----------------|-----------------------|------------------------|---------------
+                      1       | Offset meas. followed |           1            |   Unsigned
+                              |   by signal + offset  |                        |
+              ----------------|-----------------------|------------------------|---------------
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+
+  m1-conv-time:
+    description: |
+          Set conversion time of the m1 measurement. Default is power on reset value.
+                M1_CONV_TIME    ADC Integration Time [ms]   Filter Type          Mode
+              ----------------|---------------------------|-------------|--------------------
+                      0       |           200             |     CIC     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      1       |           100             |     COI     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      2       |            40             |     CIC     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      3       |            20             |     COI     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      4       |           33.33           |     CIC     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      5       |           16.67           |     COI     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      6       |           2.76            |     CIC     |  Chronoamperometry
+              ----------------|---------------------------|-------------|--------------------
+                      7       |           1.38            |     COI     |  Chronoamperometry
+              ----------------|---------------------------|-------------|--------------------
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+
+  m2-i-conv-type:
+    description: |
+          Controls how offset current is handled for measurement m2. Applicable only when PSTAT
+          mode is selected for M2_MODE. Default is power on reset value.
+             M2_I_CONV_TYPE        Description            Number of ADC           ADC Data
+                                                      conversions per sample
+            ----------------|-----------------------|-------------------------|---------------
+                    0       |   Offset + signal     |            1            |   Unsigned
+                            |  current measurement  |                         |
+            ----------------|-----------------------|-------------------------|---------------
+                    1       |    Offset current     |            1            |   Unsigned
+                            |    only measurement   |                         |
+            ----------------|-----------------------|-------------------------|---------------
+                    2       |  Offset current and   |            2            |   Unsigned
+                            |  signal current meas. |                         |
+            ----------------|-----------------------|-------------------------|---------------
+                    3       |   Offset + signal     |            1            | 2's Compliment
+                            |  current measurement  |                         |
+            ----------------|-----------------------|-------------------------|---------------
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+
+  m2-v-conv-type:
+    description: |
+          Controls how voltage offset is handled for measurement m2. Applicable only when Voltage
+          mode is selected in M2_MODE. Default is power on reset value.
+               M2_V_CONV_TYPE           Decode              Number of ADC         Data Format
+                                                        conversions per sample
+              ----------------|-----------------------|-------------------------|---------------
+                      0       | Offset meas. followed |            2            |   Unsigned
+                              |   by voltage meas.    |                         |
+              ----------------|-----------------------|-------------------------|---------------
+                      1       | Offset meas. followed |            1            |   Unsigned
+                              |   by signal + offset  |                         |
+              ----------------|-----------------------|-------------------------|---------------
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+
+  m2-conv-time:
+    description: |
+          Set conversion time of the m2 measurement. Default is power on reset value.
+                M2_CONV_TIME    ADC Integration Time [ms]   Filter Type          Mode
+              ----------------|---------------------------|-------------|--------------------
+                      0       |           200             |     CIC     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      1       |           100             |     COI     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      2       |            40             |     CIC     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      3       |            20             |     COI     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      4       |           33.33           |     CIC     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      5       |           16.67           |     COI     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      6       |           2.76            |     CIC     |  Chronoamperometry
+              ----------------|---------------------------|-------------|--------------------
+                      7       |           1.38            |     COI     |  Chronoamperometry
+              ----------------|---------------------------|-------------|--------------------
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+
+  m3-i-conv-type:
+    description: |
+          Controls how offset current is handled for measurement m3. Applicable only when PSTAT
+          mode is selected for M3_MODE. Default is power on reset value.
+             M3_I_CONV_TYPE        Description            Number of ADC           ADC Data
+                                                      conversions per sample
+            ----------------|-----------------------|-------------------------|---------------
+                    0       |   Offset + signal     |            1            |   Unsigned
+                            |  current measurement  |                         |
+            ----------------|-----------------------|-------------------------|---------------
+                    1       |    Offset current     |            1            |   Unsigned
+                            |    only measurement   |                         |
+            ----------------|-----------------------|-------------------------|---------------
+                    2       |  Offset current and   |            2            |   Unsigned
+                            |  signal current meas. |                         |
+            ----------------|-----------------------|-------------------------|---------------
+                    3       |   Offset + signal     |            1            | 2's Compliment
+                            |  current measurement  |                         |
+            ----------------|-----------------------|-------------------------|---------------
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+
+  m3-v-conv-type:
+    description: |
+          Controls how voltage offset is handled for measurement m3. Applicable only when Voltage
+          mode is selected in M3_MODE. Default is power on reset value.
+               M3_V_CONV_TYPE           Decode              Number of ADC         Data Format
+                                                        conversions per sample
+              ----------------|-----------------------|-------------------------|---------------
+                      0       | Offset meas. followed |           2             |   Unsigned
+                              |   by voltage meas.    |                         |
+              ----------------|-----------------------|-------------------------|---------------
+                      1       | Offset meas. followed |           1             |   Unsigned
+                              |   by signal + offset  |                         |
+              ----------------|-----------------------|------------------------ |---------------
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+
+  m3-conv-time:
+    description: |
+          Set conversion time of the m3 measurement. Default is power on reset value.
+                M3_CONV_TIME    ADC Integration Time [ms]   Filter Type          Mode
+              ----------------|---------------------------|-------------|--------------------
+                      0       |           200             |     CIC     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      1       |           100             |     COI     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      2       |            40             |     CIC     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      3       |            20             |     COI     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      4       |           33.33           |     CIC     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      5       |           16.67           |     COI     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      6       |           2.76            |     CIC     |  Chronoamperometry
+              ----------------|---------------------------|-------------|--------------------
+                      7       |           1.38            |     COI     |  Chronoamperometry
+              ----------------|---------------------------|-------------|--------------------
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+
+  m4-i-conv-type:
+    description: |
+          Controls how offset current is handled for measurement m4. Applicable only when PSTAT
+          mode is selected for M4_MODE. Default is power on reset value.
+             M4_I_CONV_TYPE        Description            Number of ADC           ADC Data
+                                                      conversions per sample
+            ----------------|-----------------------|-------------------------|---------------
+                    0       |   Offset + signal     |            1            |   Unsigned
+                            |  current measurement  |                         |
+            ----------------|-----------------------|-------------------------|---------------
+                    1       |    Offset current     |            1            |   Unsigned
+                            |    only measurement   |                         |
+            ----------------|-----------------------|-------------------------|---------------
+                    2       |  Offset current and   |            2            |   Unsigned
+                            |  signal current meas. |                         |
+            ----------------|-----------------------|-------------------------|---------------
+                    3       |   Offset + signal     |            1            | 2's Compliment
+                            |  current measurement  |                         |
+            ----------------|-----------------------|-------------------------|---------------
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+
+  m4-v-conv-type:
+    description: |
+          Controls how voltage offset is handled for measurement m4. Applicable only when Voltage
+          mode is selected in M4_MODE. Default is power on reset value.
+               M4_V_CONV_TYPE           Decode              Number of ADC         Data Format
+                                                        conversions per sample
+              ----------------|-----------------------|-------------------------|---------------
+                      0       | Offset meas. followed |            2            |   Unsigned
+                              |   by voltage meas.    |                         |
+              ----------------|-----------------------|-------------------------|---------------
+                      1       | Offset meas. followed |            1            |   Unsigned
+                              |   by signal + offset  |                         |
+              ----------------|-----------------------|-------------------------|---------------
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+
+  m4-conv-time:
+    description: |
+          Set conversion time of the m4 measurement. Default is power on reset value.
+                M4_CONV_TIME    ADC Integration Time [ms]   Filter Type          Mode
+              ----------------|---------------------------|-------------|--------------------
+                      0       |           200             |     CIC     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      1       |           100             |     COI     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      2       |            40             |     CIC     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      3       |            20             |     COI     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      4       |           33.33           |     CIC     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      5       |           16.67           |     COI     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      6       |           2.76            |     CIC     |  Chronoamperometry
+              ----------------|---------------------------|-------------|--------------------
+                      7       |           1.38            |     COI     |  Chronoamperometry
+              ----------------|---------------------------|-------------|--------------------
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+
+  m5-i-conv-type:
+    description: |
+          Controls how offset current is handled for measurement m5. Applicable only when PSTAT
+          mode is selected for M5_MODE. Default is power on reset value.
+             M5_I_CONV_TYPE        Description            Number of ADC           ADC Data
+                                                      conversions per sample
+            ----------------|-----------------------|-------------------------|---------------
+                    0       |   Offset + signal     |            1            |   Unsigned
+                            |  current measurement  |                         |
+            ----------------|-----------------------|-------------------------|---------------
+                    1       |    Offset current     |            1            |   Unsigned
+                            |    only measurement   |                         |
+            ----------------|-----------------------|-------------------------|---------------
+                    2       |  Offset current and   |            2            |   Unsigned
+                            |  signal current meas. |                         |
+            ----------------|-----------------------|-------------------------|---------------
+                    3       |   Offset + signal     |            1            | 2's Compliment
+                            |  current measurement  |                         |
+            ----------------|-----------------------|-------------------------|---------------
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+
+  m5-v-conv-type:
+    description: |
+          Controls how voltage offset is handled for measurement m5. Applicable only when Voltage
+          mode is selected in M5_MODE. Default is power on reset value.
+               M5_V_CONV_TYPE           Decode              Number of ADC         Data Format
+                                                        conversions per sample
+              ----------------|-----------------------|-------------------------|---------------
+                      0       | Offset meas. followed |            2            |   Unsigned
+                              |   by voltage meas.    |                         |
+              ----------------|-----------------------|-------------------------|---------------
+                      1       | Offset meas. followed |            1            |   Unsigned
+                              |   by signal + offset  |                         |
+              ----------------|-----------------------|-------------------------|---------------
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+
+  m5-conv-time:
+    description: |
+          Set conversion time of the m5 measurement. Default is power on reset value.
+                M5_CONV_TIME    ADC Integration Time [ms]   Filter Type          Mode
+              ----------------|---------------------------|-------------|--------------------
+                      0       |           200             |     CIC     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      1       |           100             |     COI     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      2       |            40             |     CIC     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      3       |            20             |     COI     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      4       |           33.33           |     CIC     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      5       |           16.67           |     COI     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      6       |           2.76            |     CIC     |  Chronoamperometry
+              ----------------|---------------------------|-------------|--------------------
+                      7       |           1.38            |     COI     |  Chronoamperometry
+              ----------------|---------------------------|-------------|--------------------
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+
+  m6-i-conv-type:
+    description: |
+          Controls how offset current is handled for measurement m6. Applicable only when PSTAT
+          mode is selected for M6_MODE. Default is power on reset value.
+             M6_I_CONV_TYPE        Description            Number of ADC           ADC Data
+                                                      conversions per sample
+            ----------------|-----------------------|-------------------------|---------------
+                    0       |   Offset + signal     |            1            |   Unsigned
+                            |  current measurement  |                         |
+            ----------------|-----------------------|-------------------------|---------------
+                    1       |    Offset current     |            1            |   Unsigned
+                            |    only measurement   |                         |
+            ----------------|-----------------------|-------------------------|---------------
+                    2       |  Offset current and   |            2            |   Unsigned
+                            |  signal current meas. |                         |
+            ----------------|-----------------------|-------------------------|---------------
+                    3       |   Offset + signal     |            1            | 2's Compliment
+                            |  current measurement  |                         |
+            ----------------|-----------------------|-------------------------|---------------
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+
+  m6-v-conv-type:
+    description: |
+          Controls how voltage offset is handled for measurement m6. Applicable only when Voltage
+          mode is selected in M6_MODE. Default is power on reset value.
+              M6_V_CONV_TYPE           Decode               Number of ADC         Data Format
+                                                        conversions per sample
+              ----------------|-----------------------|-------------------------|---------------
+                      0       | Offset meas. followed |           2             |   Unsigned
+                              |   by voltage meas.    |                         |
+              ----------------|-----------------------|-------------------------|---------------
+                      1       | Offset meas. followed |           1             |   Unsigned
+                              |   by signal + offset  |                         |
+              ----------------|-----------------------|-------------------------|---------------
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+
+  m6-conv-time:
+    description: |
+          Set conversion time of the m6 measurement. Default is power on reset value.
+                M6_CONV_TIME    ADC Integration Time [ms]   Filter Type          Mode
+              ----------------|---------------------------|-------------|--------------------
+                      0       |           200             |     CIC     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      1       |           100             |     COI     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      2       |            40             |     CIC     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      3       |            20             |     COI     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      4       |           33.33           |     CIC     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      5       |           16.67           |     COI     |   PSTAT, Voltage
+              ----------------|---------------------------|-------------|--------------------
+                      6       |           2.76            |     CIC     |  Chronoamperometry
+              ----------------|---------------------------|-------------|--------------------
+                      7       |           1.38            |     COI     |  Chronoamperometry
+              ----------------|---------------------------|-------------|--------------------
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+
+  lock-ocfg:
+    description: |
+          Configures the lock output driver. Default is power on reset value.
+            0 # Open drain active low output
+            1 # Active drive to VBAT and GND, active high (Default)
+            2 # Active drive to VBAT and GND, active low
+            3 # Hi Z
+    type: int
+    default: 1
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+
+  gpio1-ocfg:
+    description: |
+          Configures the GPIO1 output driver. Default is power on reset value.
+            0 # Open drain active low output
+            1 # Active drive to VBAT and GND, active high
+            2 # Active drive to VBAT and GND, active low
+            3 # Hi Z
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+
+  gpio2-ocfg:
+    description: |
+          Configures the GPIO2 output driver. Default is power on reset value.
+            0 # Open drain active low output
+            1 # Active drive to VBAT and GND, active high
+            2 # Active drive to VBAT and GND, active low
+            3 # Hi Z
+    type: int
+    default: 0
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+
+  lock-po:
+    description: Drives the LOCK pin to a logic 0 or 1.
+    type: boolean
+
+  gpio2-po:
+    description: Drives the GPIO2 pin to logic 0 or 1.
+    type: boolean
+
+  gpio1-po:
+    description: Drives the GPIO1 pin to logic 0 or 1.
+    type: boolean
