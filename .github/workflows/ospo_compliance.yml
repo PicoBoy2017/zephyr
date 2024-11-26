@@ -1,0 +1,62 @@
+# Copyright (c) 2024 Analog Devices, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+name: ADI Zephyr Policy Compliance Scan
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - adi-main
+      - release*
+
+env:
+  COMPLIANCE_PROJECT_NAME: "oa_zephyr_innersource"
+
+jobs:
+  policy-compliance-scan:
+    runs-on: ses-ist-build-lu-x64-adi-zephyr-sdk
+    container: ghcr.io/zephyrproject-rtos/ci:v0.26.5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get Branch
+        run: echo "GITHUB_BRANCH_NAME=${{ github.ref_name }}" >> $GITHUB_ENV
+
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "adopt"
+          java-version: "17"
+
+      - name: Policy Scan Action
+        uses: adi-innersource/policy-scan-action@v2
+        env:
+          BLACKDUCK_AUTH_TOKEN: ${{ secrets.BLACKDUCK_AUTH_TOKEN }}
+        with:
+          component-name: ${{ env.COMPLIANCE_PROJECT_NAME }}
+          component-version: ${{ env.GITHUB_BRANCH_NAME }}
+          blackduck-options: |
+            --detect.excluded.detector.types=GIT,PIP
+            --detect.policy.check.fail.on.severities=NONE
+            --detect.wait.for.results=false
+
+  ospo_collateral:
+    runs-on: ses-ist-build-lu-x64-adi-zephyr-sdk
+    needs: policy-compliance-scan
+    steps:
+      - name: Get Branch
+        run: echo "GITHUB_BRANCH_NAME=${{ github.ref_name }}" >> $GITHUB_ENV
+
+      - name: OSPO Collateral
+        id: ospo_collateral
+        uses: adi-innersource/reusable-workflows/.github/actions/ospo_collateral@3709136eb4fae9150e8da6b5767005c413ac21cd
+        with:
+          COMPLIANCE_PROJECT_NAME: ${{ env.COMPLIANCE_PROJECT_NAME }}
+          COMPLIANCE_PROJECT_VERSION: ${{ env.GITHUB_BRANCH_NAME }}
+          BLACKDUCK_API_TOKEN: ${{ secrets.BLACKDUCK_API_TOKEN }}
+
+      - name: Cleanup workspace
+        if: always()
+        uses: adi-innersource/reusable-workflows/.github/actions/cleanup_workspace@3709136eb4fae9150e8da6b5767005c413ac21cd
