@@ -24,3 +24,7 @@ endif()
 if(CONFIG_BT_ZEPHYR_NUS)
   add_subdirectory(nus)
 endif()
+
+if (CONFIG_BT_CGMS)
+  add_subdirectory(cgms)
+endif()

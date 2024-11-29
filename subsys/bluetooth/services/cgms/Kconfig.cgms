@@ -1,0 +1,126 @@
+# Copyright (c) 2024 Analog Devices, Inc.
+#
+# SPDX-License-Identifier: Apache-2.0
+
+# Bluetooth GATT Continuous Glucose Monitoring service
+#
+# For more information on CGM Service visit:
+# https://www.bluetooth.com/wp-content/uploads/Files/Specification/HTML/CGMS_v1.0.2/out/en/index-en.html#UUID-6b7885fa-4b8f-fa82-07db-56a028af6f02
+#
+# For more information on GATT bit-field specification visit:
+# https://btprodspecificationrefs.blob.core.windows.net/gatt-specification-supplement/GATT_Specification_Supplement.pdf
+
+menuconfig BT_CGMS
+	bool "GATT Continuous Glucose Monitoring service"
+
+if BT_CGMS
+
+config BT_CGMS_INTERVAL
+	int "CGM Interval in Minutes"
+	default 1
+	help
+	  Sets the interval in minutes between periodic measurements
+
+config BT_CGMS_TYPE
+	int "CGM Type Field"
+	range 1 10
+	help
+	  Sets the Type field for the device
+
+	  Values:
+	    0 - Reserved
+	    1 - Capilary Whole blood
+	    2 - Capillary Plasma
+	    3 - Venous Whole blood
+	    4 - Venous Plasma
+	    5 - Arterial Whole blood
+	    6 - Arterial Plasma
+	    7 - Undetermined Whole blood
+	    8 - Undetermined Plasma
+	    9 - Interstitial Fluid (ISF)
+	    10 - Control Solution
+
+config BT_CGMS_SAMPLE_LOCATION
+	int "CGM Sample Location Field"
+	range 1 15
+	help
+	  Sets the Sample Location field for the device
+
+	  Values:
+	    1 - Finger
+	    2 - Alternate Site Test (AST)
+	    3 - Earlobe
+	    4 - Control Solution
+	    5 - Subcutaneous tissue
+	    6-14 - Reserved
+	    15 - Sample Location value not available
+
+config BT_CGMS_EXPECTED_RUNTIME
+	int "Expected runtime in hours"
+	help
+	  Sets the CGM device' expected runtime in hours
+
+config BT_CGMS_PRIO
+	int "Priority level for CGM Service"
+	default 3
+	help
+	  Sets the thread priority level for the CGM service
+
+config BT_CGMS_STACK_SIZE
+	int "Stack size for CGMS thread"
+	default 1024
+	help
+	  Sets the stack size for the CGM Service thread
+
+config BT_CGMS_RACP_STACK_SIZE
+	int "Stack size for RACP helper thread"
+	default 1024
+	help
+	  Sets the stack size for the RACP query helper thread
+
+config BT_CGMS_RACP_WORKER_PRIO
+	int "Priority level for RACP worker thread"
+	default 4
+	help
+	  Sets the thread priority level of the RACP worker thread for querying CGM records
+
+config BT_CGMS_RACP_WORKER_ABORT_TIMEOUT_MS
+	int "Timeout in ms for waiting for the RACP worker thread to abort when signalled"
+	default 1500
+	help
+	  How long to wait until reporting a failed abort when central attempts to abort an RACP action
+
+choice
+	prompt "Initial log level limit"
+	default BT_CGMS_LOG_LEVEL_INF
+
+config BT_CGMS_LOG_LEVEL_DEFAULT
+	bool "System limit (LOG_MAX_LEVEL)"
+
+config BT_CGMS_LOG_LEVEL_DBG
+	bool "Debug"
+
+config BT_CGMS_LOG_LEVEL_INF
+	bool "Info"
+
+config BT_CGMS_LOG_LEVEL_WRN
+	bool "Warning"
+
+config BT_CGMS_LOG_LEVEL_ERR
+	bool "Error"
+
+config BT_CGMS_LOG_LEVEL_NONE
+	bool "None"
+
+endchoice
+
+config BT_CGMS_LOG_LEVEL
+	int
+	default 0 if BT_CGMS_LOG_LEVEL_NONE
+	default 1 if BT_CGMS_LOG_LEVEL_ERR
+	default 2 if BT_CGMS_LOG_LEVEL_WRN
+	default 3 if BT_CGMS_LOG_LEVEL_INF
+	default 4 if BT_CGMS_LOG_LEVEL_DBG
+	default 5 if BT_CGMS_LOG_LEVEL_DEFAULT
+
+endif # BT_CGMS

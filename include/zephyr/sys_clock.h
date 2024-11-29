@@ -91,6 +91,9 @@ typedef struct {
 /** number of milliseconds per second */
 #define MSEC_PER_SEC 1000U
 
+/** number of milliseconds per minute */
+#define MSEC_PER_MIN 60000U
+
 /** number of seconds per minute */
 #define SEC_PER_MIN 60U
 
