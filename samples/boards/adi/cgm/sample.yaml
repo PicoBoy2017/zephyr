@@ -1,0 +1,13 @@
+sample:
+  name: ADI Continuous Glucose Monitor Reference Design
+  description: Demonstrates an example CGM device using Zephyr
+tests:
+  sample.adi.cgm:
+    harness: bluetooth
+    platform_allow:
+      - max32655fthr/max32655/m4
+      - max32657evkit/max32657
+    tags: bluetooth
+    integration_platforms:
+      - max32655fthr/max32655/m4
+      - max32657evkit/max32657
