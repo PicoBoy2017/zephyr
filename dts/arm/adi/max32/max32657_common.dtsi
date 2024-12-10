@@ -68,6 +68,10 @@
 			status = "disabled";
 		};
 	};
+	bt_hci_max32: bt_hci_max32 {
+		compatible = "adi,max32-hci";
+		status = "okay";
+	};
 };
 
 &sram {
