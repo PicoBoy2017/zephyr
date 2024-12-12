@@ -3,6 +3,7 @@
 
 board:
   name: max78002evkit
+  full_name: MAX78002EVKIT
   vendor: adi
   socs:
     - name: max78002

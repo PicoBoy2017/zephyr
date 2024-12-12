@@ -1,30 +1,28 @@
-.. _max78002_evkit:
-
-MAX78002EVKIT
-#############
+.. zephyr:board:: max78002evkit
 
 Overview
 ********
 The MAX78002 evaluation kit (EV kit) provides a platform and tools for leveraging device capabilities to build new
-generations of artificial intelligence (AI) products. The kit provides optimal versatility with a modular peripheral
-architecture, allowing a variety of input and output devices to be remotely located. DVP and CSI cameras,
-I2S audio peripherals, digital microphones, and analog sensors are supported, while a pair of industry-standard
-QWIIC connectors supports a large and growing array of aftermarket development boards. An onboard stereo
-audio codec offers line-level audio input and output, and tactile input is provided by a touch-enabled 2.4in TFT
-display. The MAX78002 energy consumption is tracked by a power accumulator, with four channels of formatted
-results presented on a secondary TFT display. All device GPIOs are accessible on 0.1in pin headers. A standard
-coaxial power jack serves as power input, using the included 5V, 3A wall-mount adapter. Two USB connectors
-provide serial access to the MAX78002, one directly and the other through a USB to UART bridge. A third
-USB connector allows access to the MAX78002 energy consumption data. Rounding out the features, a microSD
-connector provides the capability for inexpensive highdensity portable data storage.
+generations of artificial intelligence (AI) products.
+
+The kit provides optimal versatility with a modular peripheral architecture, allowing a variety of input and output
+devices to be remotely located. DVP and CSI cameras, I2S audio peripherals, digital microphones, and analog sensors
+are supported, while a pair of industry-standard QWIIC connectors supports a large and growing array of aftermarket
+development boards. An onboard stereo audio codec offers line-level audio input and output, and tactile input is
+provided by a touch-enabled 2.4in TFT display. The MAX78002 energy consumption is tracked by a power accumulator,
+with four channels of formatted results presented on a secondary TFT display. All device GPIOs are accessible on
+0.1in pin headers. A standard coaxial power jack serves as power input, using the included 5V, 3A wall-mount
+adapter. Two USB connectors provide serial access to the MAX78002, one directly and the other through a USB to UART
+bridge. A third USB connector allows access to the MAX78002 energy consumption data. Rounding out the features, a
+microSD connector provides the capability for inexpensive highdensity portable data storage.
 
 The Zephyr port is running on the MAX78002 MCU.
 
-.. image:: img/max78002evkit_img1.jpg
+.. image:: img/max78002evkit.jpg
    :align: center
    :alt: MAX78002 EVKIT Front
 
-.. image:: img/max78002evkit_img2.jpg
+.. image:: img/max78002evkit_back.jpg
    :align: center
    :alt: MAX78002 EVKIT Back
 
@@ -128,7 +126,7 @@ Hardware
 Supported Features
 ==================
 
-Below are the interfaces supported by Zephyr on MAX78002EVKIT.
+The ``max78002evkit/max78002/m4`` board target supports the following interfaces:
 
 +-----------+------------+-------------------------------------+
 | Interface | Controller | Driver/Component                    |
