@@ -546,6 +546,9 @@ class DeviceHandler(Handler):
                     elif runner == "openocd" and product == "LPC-LINK2 CMSIS-DAP":
                         command_extra_args.append("--cmd-pre-init")
                         command_extra_args.append("adapter serial %s" % board_id)
+                    elif runner == "openocd" and product == "MAX32 J-Link":
+                        command_extra_args.append("--cmd-pre-init")
+                        command_extra_args.append("adapter serial %s" % board_id)
                     elif runner == "jlink":
                         command.append("--dev-id")
                         command.append(board_id)
