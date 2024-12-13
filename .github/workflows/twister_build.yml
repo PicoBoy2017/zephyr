@@ -225,14 +225,23 @@ jobs:
           ccache -p
           ccache -s
 
+      - name: Rename Unit Test Results
+        if: always()
+        continue-on-error: true
+        run: |
+          mv twister-out/twister.xml twister-out/twister_${{ inputs.runner }}.xml
+          mv twister-out/twister.json twister-out/twister_${{ inputs.runner }}.json
+          mv module_tests/twister.xml module_tests/twister_${{ inputs.runner }}.xml
+          mv testplan.json testplan_${{ inputs.runner }}.json
+
       - name: Upload Unit Test Results
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: Unit Test Results (Subset ${{ matrix.subset }})
+          name: Unit Test Results (Subset ${{ inputs.runner }})
           if-no-files-found: ignore
           path: |
-            twister-out/twister.xml
-            twister-out/twister.json
-            module_tests/twister.xml
-            testplan.json
+            twister-out/twister_${{ inputs.runner }}.xml
+            twister-out/twister_${{ inputs.runner }}.json
+            module_tests/twister_${{ inputs.runner }}.xml
+            testplan_${{ inputs.runner }}.json
