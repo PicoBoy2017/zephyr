@@ -16,4 +16,4 @@ supported:
   - gpio
   - spi
 ram: 128
-flash: 288
+flash: 576

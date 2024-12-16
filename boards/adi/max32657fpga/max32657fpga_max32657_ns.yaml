@@ -19,4 +19,4 @@ supported:
   - rtc
   - spi
 ram: 128
-flash: 320
+flash: 576

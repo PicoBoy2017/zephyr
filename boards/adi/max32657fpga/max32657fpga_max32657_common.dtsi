@@ -72,20 +72,22 @@
 		};
 		slot0_partition: partition@10000 {
 			label = "image-0";
-			reg = <0x10000 DT_SIZE_K(128)>;
+			reg = <0x10000 DT_SIZE_K(320)>;
 		};
-		slot0_ns_partition: partition@30000 {
+		slot0_ns_partition: partition@60000 {
 			label = "image-0-nonsecure";
-			reg = <0x30000 DT_SIZE_K(320)>;
+			reg = <0x60000 DT_SIZE_K(576)>;
 		};
-		slot1_partition: partition@80000 {
-			label = "image-1";
-			reg = <0x80000 DT_SIZE_K(128)>;
-		};
-		slot1_ns_partition: partition@a0000 {
-			label = "image-1-nonsecure";
-			reg = <0xa0000 DT_SIZE_K(320)>;
-		};
+		/*
+		 * slot1_partition: partition@f0000 {
+		 *	label = "image-1";
+		 *	reg = <0xf0000 DT_SIZE_K(0)>;
+		 * };
+		 * slot1_ns_partition: partition@f0000 {
+		 *	label = "image-1-nonsecure";
+		 *	reg = <0xf0000 DT_SIZE_K(0)>;
+		 * };
+		 */
 		storage_partition: partition@f0000 {
 			label = "storage";
 			reg = <0xf0000 DT_SIZE_K(64)>;

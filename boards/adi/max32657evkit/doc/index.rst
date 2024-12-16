@@ -1,7 +1,7 @@
 .. _max32657_evkit:
 
-ADI MAX32657
-############
+MAX32657
+########
 
 Overview
 ********
@@ -350,19 +350,21 @@ MCUboot partitioning which looks like the table below
 +==========+==================+=================================+
 | boot     | 0x1000000[64K]   | MCU Bootloader                  |
 +----------+------------------+---------------------------------+
-| slot0    | 0x1010000[288k]  | Secure image slot0              |
+| slot0    | 0x1010000[320k]  | Secure image slot0              |
 +----------+------------------+---------------------------------+
-| slot0_ns | 0x1038000[160k]  | Non-secure image slot0          |
+| slot0_ns | 0x1060000[576k]  | Non-secure image slot0          |
 +----------+------------------+---------------------------------+
-| slot1    | 0x1080000[288k]  | Updates slot0 image             |
+| slot1    | 0x10F0000[0k]    | Updates slot0 image             |
 +----------+------------------+---------------------------------+
-| slot1_ns | 0x10a8000[160k]  | Updates slot0_ns image          |
+| slot1_ns | 0x10F0000[0k]    | Updates slot0_ns image          |
 +----------+------------------+---------------------------------+
 | storage  | 0x10f0000[64k]   | File system, persistent storage |
 +----------+------------------+---------------------------------+
 
-See below examples of how this partitioning is used
-
+Above table demonstrate default flash layout, the sections can be updated
+as per of target application.
+Additionally if firmware update feature requires slot1 and slot1_ns section need to be
+defined. On default the section size set as 0 due to firmware update not requires on default.
 
 Trusted Execution
 *****************
@@ -372,9 +374,9 @@ Trusted Execution
 +===========+==================+====================+
 | MCUboot   | 0x1000000[64K]   | Secure bootloader  |
 +-----------+------------------+--------------------+
-| TFM_S     | 0x1010000[160k]  | Secure image       |
+| TFM_S     | 0x1060000[320k]  | Secure image       |
 +-----------+------------------+--------------------+
-| Zephyr_NS | 0x1038000[288k]  | Non-Secure image   |
+| Zephyr_NS | 0x10F0000[576k]  | Non-Secure image   |
 +-----------+------------------+--------------------+
 | storage   | 0x10f0000[64k]   | Persistent storage |
 +-----------+------------------+--------------------+
@@ -412,6 +414,42 @@ protect memory and peripheral. Incase of need peripheral and flash ownership can
 :zephyr_file:`../modules/tee/tf-m/trusted-firmware-m/platform/ext/target/adi/max32657/target_cfg.c`
 file by updating "ns_mpc_config_arr" and "ns_periph_arr" array content.
 
+As an example for below ns_periph_arr array configuration TRNG is not going to be accessible
+by non-secure. All other peripehral is going to be accessible by NS world.
+The peripheral commented in ns_periph_arr array is not be accessible by NS world.
+
+uint8_t ns_periph_arr[] = {
+       SPC_GCR,
+       SPC_SIR,
+       SPC_FCR,
+       SPC_WDT,
+       SPC_AES,
+       SPC_AESKEY,
+       SPC_CRC,
+       SPC_GPIO0,
+       SPC_TIMER0,
+       SPC_TIMER1,
+       SPC_TIMER2,
+       SPC_TIMER3,
+       SPC_TIMER4,
+       SPC_TIMER5,
+       SPC_I3C,
+       SPC_UART,
+       SPC_SPI,
+       // SPC_TRNG,
+       SPC_BTLE_DBB,
+       SPC_BTLE_RFFE,
+       SPC_RSTZ,
+       SPC_BOOST,
+       SPC_BBSIR,
+       SPC_BBFCR,
+       SPC_RTC,
+       SPC_WUT0,
+       SPC_WUT1,
+       SPC_PWR,
+       SPC_MCR,
+};
+
 
 Programming and Debugging
 *************************
@@ -444,10 +482,7 @@ the resulting image (``tfm_merged.hex``) with a J-Link as follows
 
    .. code-block:: console
 
-      JLinkExe -device max32657 -if swd -speed 1000 -autoconnect 1
-      J-Link>r
-      J-Link>erase
-      J-Link>loadfile build/zephyr/tfm_merged.hex
+      west flash --hex-file build/zephyr/tfm_merged.hex
 
 We need to reset the board manually after flashing the image to run this code.
 
