@@ -356,6 +356,8 @@ MCUboot partitioning which looks like the table below
 +----------+------------------+---------------------------------+
 | slot1_ns | 0x10a8000[288k]  | Updates slot0_ns image          |
 +----------+------------------+---------------------------------+
+| storage  | 0x10f0000[64k]   | File system, persistent storage |
++----------+------------------+---------------------------------+
 
 See below examples of how this partitioning is used
 
@@ -371,6 +373,8 @@ Trusted Execution
 | TFM_S     | 0x1010000[160k]  | Secure image       |
 +-----------+------------------+--------------------+
 | Zephyr_NS | 0x1038000[288k]  | Non-Secure image   |
++-----------+------------------+--------------------+
+| storage   | 0x10f0000[64k]   | Persistent storage |
 +-----------+------------------+--------------------+
 
 +----------------+------------------+-------------------+

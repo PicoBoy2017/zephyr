@@ -88,6 +88,10 @@
 			label = "image-1-nonsecure";
 			reg = <0xa8000 DT_SIZE_K(288)>;
 		};
+		storage_partition: partition@f0000 {
+			label = "storage";
+			reg = <0xf0000 DT_SIZE_K(64)>;
+		};
 	};
 };
 
