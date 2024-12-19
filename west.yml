@@ -339,7 +339,7 @@ manifest:
         - crypto
     - name: trusted-firmware-m
       remote: adi-innersource
-      revision: dea462eb426e4bbdff8b98d92aac284904df3e40
+      revision: 1c4f771112fc6605398a1655995cfef896590991
       path: modules/tee/tf-m/trusted-firmware-m
       groups:
         - tee
