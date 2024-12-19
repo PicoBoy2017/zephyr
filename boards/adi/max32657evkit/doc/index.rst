@@ -350,13 +350,13 @@ MCUboot partitioning which looks like the table below
 +==========+==================+=================================+
 | boot     | 0x1000000[64K]   | MCU Bootloader                  |
 +----------+------------------+---------------------------------+
-| slot0    | 0x1010000[160k]  | Secure image slot0              |
+| slot0    | 0x1010000[288k]  | Secure image slot0              |
 +----------+------------------+---------------------------------+
-| slot0_ns | 0x1038000[288k]  | Non-secure image slot0          |
+| slot0_ns | 0x1038000[160k]  | Non-secure image slot0          |
 +----------+------------------+---------------------------------+
-| slot1    | 0x1080000[160k]  | Updates slot0 image             |
+| slot1    | 0x1080000[288k]  | Updates slot0 image             |
 +----------+------------------+---------------------------------+
-| slot1_ns | 0x10a8000[288k]  | Updates slot0_ns image          |
+| slot1_ns | 0x10a8000[160k]  | Updates slot0_ns image          |
 +----------+------------------+---------------------------------+
 | storage  | 0x10f0000[64k]   | File system, persistent storage |
 +----------+------------------+---------------------------------+
