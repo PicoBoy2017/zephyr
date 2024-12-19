@@ -563,9 +563,15 @@ static int max30123_write_config(const struct device *dev)
 static int max30123_electrochemical_init(const struct device *dev)
 {
 	const struct max30123_dev_config *const config = dev->config;
+	uint8_t tmp;
 
 	if (!spi_is_ready_dt(&config->spi)) {
 		return -ENODEV;
+	}
+
+	/* Read STATUS register to clear stale error bits */
+	if (max30123_reg_read(dev, STATUS_1, &tmp)) {
+		return -EIO;
 	}
 
 	/* Write config from devicetree and Kconfig */
