@@ -13,5 +13,6 @@ supported:
   - dma
   - trng
   - pwm
+  - gpio
 ram: 128
 flash: 288
