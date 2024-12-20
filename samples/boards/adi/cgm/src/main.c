@@ -8,6 +8,7 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/device.h>
 #include <zephyr/devicetree.h>
+#include <zephyr/settings/settings.h>
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/bluetooth/hci.h>
 #include <zephyr/bluetooth/gap.h>
@@ -25,11 +26,18 @@
 
 LOG_MODULE_REGISTER(adi_cgm, LOG_LEVEL_INF);
 
+/* GPIO */
+#define BUTTON_NODE DT_ALIAS(pb)
+static const struct gpio_dt_spec button = GPIO_DT_SPEC_GET_OR(BUTTON_NODE, gpios, {0});
+static struct gpio_callback button_cb_data;
+K_SEM_DEFINE(button_sem, 0, 1);
+
 /* Next glucose reading */
 static uint16_t glucose_concentration;
 
 /* Bluetooth declarations */
 #define FIXED_PASSKEY 555555
+static bt_addr_le_t stored_bond;
 static struct bt_conn *active_conn;
 
 static const struct bt_data ad[] = {
@@ -41,6 +49,7 @@ static const struct bt_data sd[] = {
 	BT_DATA(BT_DATA_NAME_COMPLETE, CONFIG_BT_DEVICE_NAME, sizeof(CONFIG_BT_DEVICE_NAME) - 1),
 };
 
+static void bond_info(const struct bt_bond_info *info, void *user_data);
 static void on_connected(struct bt_conn *conn, uint8_t err)
 {
 	if (err) {
@@ -56,7 +65,22 @@ static void on_connected(struct bt_conn *conn, uint8_t err)
 
 	active_conn = bt_conn_ref(conn);
 
-	bt_conn_set_security(conn, BT_SECURITY_L4);
+	const bt_addr_le_t tmp_addr = {0};
+
+	bt_foreach_bond(BT_ID_DEFAULT, bond_info, (void *)&tmp_addr);
+
+	/* Check if this connection is our bonded device */
+	if (!bt_addr_le_cmp(&tmp_addr, bt_conn_get_dst(conn))) {
+		LOG_INF("Connected to bonded device");
+		set_led_state(LED_IND_CONNECTED);
+		return;
+	} else if (!bt_addr_le_cmp(&tmp_addr, BT_ADDR_LE_ANY)) {
+		LOG_INF("No bonded device, pairing with new device");
+		bt_conn_set_security(conn, BT_SECURITY_L4);
+	} else {
+		LOG_INF("Unknown device, disconnecting");
+		bt_conn_disconnect(conn, BT_HCI_ERR_REMOTE_USER_TERM_CONN);
+	}
 }
 
 static void on_disconnected(struct bt_conn *conn, uint8_t reason)
@@ -114,7 +138,13 @@ static void pairing_complete(struct bt_conn *conn, bool bonded)
 
 	bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
 
-	set_led_state(LED_IND_CONNECTED);
+	if (bonded) {
+		LOG_INF("Paired with %s", addr);
+		bt_addr_le_copy(&stored_bond, bt_conn_get_dst(conn));
+		set_led_state(LED_IND_CONNECTED);
+	} else {
+		LOG_INF("Pairing failed with %s", addr);
+	}
 }
 
 static void pairing_failed(struct bt_conn *conn, enum bt_security_err reason)
@@ -128,15 +158,141 @@ static void pairing_failed(struct bt_conn *conn, enum bt_security_err reason)
 	LOG_INF("Pairing failed with %s (reason %u)", addr, reason);
 }
 
+static void bond_deleted(uint8_t id, const bt_addr_le_t *peer)
+{
+	char addr[BT_ADDR_LE_STR_LEN];
+
+	bt_addr_le_to_str(peer, addr, sizeof(addr));
+
+	LOG_INF("Bond deleted: %s", addr);
+}
+
 static struct bt_conn_auth_info_cb auth_cb_info = {
 	.pairing_complete = pairing_complete,
 	.pairing_failed = pairing_failed,
+	.bond_deleted = bond_deleted,
 };
+
+static void bond_info(const struct bt_bond_info *info, void *user_data)
+{
+	char addr[BT_ADDR_LE_STR_LEN];
+
+	bt_addr_le_to_str(&(info->addr), addr, sizeof(addr));
+
+	LOG_INF("Loading Bonded Device: %s", addr);
+	bt_addr_le_copy((bt_addr_le_t *)user_data, &info->addr);
+}
+
+static int clear_bonds(void)
+{
+	int err;
+
+	err = bt_unpair(BT_ID_DEFAULT, BT_ADDR_LE_ANY);
+	if (err) {
+		LOG_ERR("Failed to clear bonds (err %d)", err);
+		return -1;
+	}
+
+	bt_addr_le_copy(&stored_bond, BT_ADDR_LE_ANY);
+
+	if (active_conn) {
+		bt_conn_unref(active_conn);
+		active_conn = NULL;
+	}
+
+	return 0;
+}
+
+static void activate_pairing(void)
+{
+	int err = 0;
+	int reset = active_conn ? 0 : 1;
+
+	/* Clear bonds if any exist */
+	if (bt_addr_le_cmp(&stored_bond, BT_ADDR_LE_ANY)) {
+		if (clear_bonds()) {
+			LOG_ERR("Failed to clear bonds");
+			return;
+		}
+	}
+
+	if (reset) {
+		err = bt_le_adv_start(BT_LE_ADV_CONN_FAST_1, ad, ARRAY_SIZE(ad), sd,
+				      ARRAY_SIZE(sd));
+	}
+
+	if (err) {
+		switch (err) {
+		case -ENOMEM:
+			err = bt_le_adv_stop();
+			if (err) {
+				LOG_ERR("Failed to stop advertising (err %d)", err);
+				return;
+			}
+			err = bt_le_adv_start(BT_LE_ADV_CONN_FAST_1, ad, ARRAY_SIZE(ad), sd,
+						ARRAY_SIZE(sd));
+			if (err) {
+				LOG_ERR("Failed to start advertising after stop (err %d)", err);
+				return;
+			}
+		break;
+		case -EALREADY:
+			/* Do nothing, already advertising */
+		break;
+		default:
+			LOG_ERR("Advertising failed to start (err %d)", err);
+			return;
+		}
+	}
+
+	set_led_state(LED_IND_SEARCHING);
+
+	LOG_INF("Pairing activated");
+}
 
 /* Glucose Concetration Getter Callback */
 static int get_glucose(uint16_t *glucose_conc)
 {
 	*glucose_conc = glucose_concentration;
+	return 0;
+}
+
+static void button_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins)
+{
+	k_sem_give(&button_sem);
+}
+
+static int init_button(void)
+{
+	int err;
+
+	err = gpio_is_ready_dt(&button);
+	if (!err) {
+		LOG_ERR("Button not ready");
+		return -1;
+	}
+
+	err = gpio_pin_configure_dt(&button, GPIO_INPUT);
+	if (err) {
+		LOG_ERR("Button failed to configure");
+		return err;
+	}
+
+	err = gpio_pin_interrupt_configure_dt(&button, GPIO_INT_EDGE_TO_ACTIVE);
+	if (err) {
+		LOG_ERR("Failed to configure interrupt on %s pin %d\n", button.port->name,
+			button.pin);
+		return err;
+	}
+
+	gpio_init_callback(&button_cb_data, button_pressed, BIT(button.pin));
+
+	err = gpio_add_callback(button.port, &button_cb_data);
+	if (err) {
+		LOG_ERR("Failed to add callback");
+		return err;
+	}
+
 	return 0;
 }
 
@@ -149,6 +305,17 @@ static int init_bt(void)
 		LOG_ERR("Bluetooth init failed (err %d)", err);
 		return err;
 	}
+
+	if (IS_ENABLED(CONFIG_SETTINGS)) {
+		err = settings_load();
+		if (err) {
+			LOG_ERR("Failed to load settings!");
+			return err;
+		}
+	}
+
+	/* Copy restored bond data to global variable */
+	bt_foreach_bond(BT_ID_DEFAULT, bond_info, (void *)&stored_bond);
 
 #ifdef CONFIG_BT_FIXED_PASSKEY
 	err = bt_passkey_set(FIXED_PASSKEY);
@@ -208,6 +375,11 @@ static int init_peripherals(void)
 {
 	int err;
 
+	err = init_button();
+	if (err) {
+		return err;
+	}
+
 	err = init_sensors();
 	if (err) {
 		return err;
@@ -239,7 +411,13 @@ int main(void)
 	}
 	set_led_state(LED_IND_DEV_READY);
 
-	/* 2. Initialize services */
+	/* 2. Activate BLE connectivity, and load bonded device */
+	char addr[BT_ADDR_LE_STR_LEN];
+
+	bt_addr_le_to_str(&stored_bond, addr, sizeof(addr));
+	LOG_INF("Loaded Bonded Device: %s", addr);
+
+	/* 3. Initialize services */
 	init_ecs_monitor_thread(&glucose_concentration);
 
 	struct bt_cgms_callbacks cgms_callbacks = {
@@ -254,6 +432,11 @@ int main(void)
 		return err;
 	}
 
-	/* 3. Set LED indicator to search */
+	/* 4. Set LED indicator to search */
 	set_led_state(LED_IND_SEARCHING);
+
+	while (1) {
+		k_sem_take(&button_sem, K_FOREVER);
+		activate_pairing();
+	}
 }
