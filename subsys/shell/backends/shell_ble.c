@@ -17,7 +17,7 @@
 
 LOG_MODULE_REGISTER(shell_ble, CONFIG_SHELL_BLE_INIT_LOG_LEVEL);
 
-#define SHELL_MTU_PAYLOAD 20
+#define SHELL_MTU_PAYLOAD 128
 
 /* 128 bit UUIDs for GATT service and characteristics */
 #define BT_UUID_BLE_SHELL_VAL BT_UUID_128_ENCODE(0x5cca88d3, 0x80ac, 0x45a8, 0x84a7, 0xd949fe458b85)
