@@ -14,14 +14,19 @@
 #include <zephyr/spinlock.h>
 #include <zephyr/devicetree.h>
 #include <zephyr/drivers/rtc.h>
+#include <zephyr/logging/log.h>
 #include <zephyr/sys/sys_io.h>
 #include <zephyr/sys/timeutil.h>
+#include <zephyr/drivers/clock_control/adi_max32_clock_control.h>
 
 #include <rtc.h>
 #include <time.h>
 #include <wrap_max32_lp.h>
+#include <wrap_max32_rtc.h>
 
 #include "rtc_utils.h"
+
+LOG_MODULE_REGISTER(max32_rtc, CONFIG_RTC_LOG_LEVEL);
 
 #define MSEC_TO_NSEC(x) ((x)*1000000)
 
@@ -61,6 +66,7 @@ struct max32_rtc_data {
 struct max32_rtc_config {
 	mxc_rtc_regs_t *regs;
 	void (*irq_func)(void);
+	struct max32_perclk perclk;
 };
 
 static inline void convert_to_rtc_time(uint32_t sec, uint32_t subsec, struct rtc_time *timeptr)
@@ -79,7 +85,9 @@ static inline void convert_to_rtc_time(uint32_t sec, uint32_t subsec, struct rtc
 
 static int api_set_time(const struct device *dev, const struct rtc_time *timeptr)
 {
+	const struct max32_rtc_config *cfg = dev->config;
 	time_t sec;
+	int ret = 0;
 
 	if (timeptr == NULL) {
 		return -EINVAL;
@@ -90,8 +98,12 @@ static int api_set_time(const struct device *dev, const struct rtc_time *timeptr
 		return -EINVAL;
 	}
 
-	while (MXC_RTC_Init((uint32_t)sec, NSEC_TO_RSSA(timeptr->tm_nsec)) == E_BUSY) {
-		;
+	while ((ret = Wrap_MXC_RTC_Init((uint32_t)sec, NSEC_TO_RSSA(timeptr->tm_nsec),
+					cfg->perclk.clk_src)) != E_SUCCESS) {
+		if (ret == -1) {
+			LOG_ERR("RTC does not support this clock source.");
+			return -ENOTSUP;
+		}
 	}
 
 #ifdef CONFIG_RTC_ALARM
@@ -394,13 +406,15 @@ static int rtc_max32_init(const struct device *dev)
 		IRQ_CONNECT(DT_INST_IRQN(_num), DT_INST_IRQ(_num, priority), rtc_max32_isr,        \
 			    DEVICE_DT_INST_GET(_num), 0);                                          \
 		irq_enable(DT_INST_IRQN(_num));                                                    \
-		if (DT_INST_PROP(_num, wakeup_source)) {					   \
-			MXC_LP_EnableRTCAlarmWakeup();						   \
-		}										   \
+		if (DT_INST_PROP(_num, wakeup_source)) {                                           \
+			MXC_LP_EnableRTCAlarmWakeup();                                             \
+		}                                                                                  \
 	};                                                                                         \
 	static const struct max32_rtc_config rtc_max32_config_##_num = {                           \
 		.regs = (mxc_rtc_regs_t *)DT_INST_REG_ADDR(_num),                                  \
 		.irq_func = max32_rtc_irq_init_##_num,                                             \
+		.perclk.clk_src =                                                                  \
+			DT_INST_PROP_OR(_num, clock_source, ADI_MAX32_PRPH_CLK_SRC_ERTCO),         \
 	};                                                                                         \
 	static struct max32_rtc_data rtc_data_##_num = {                                           \
 		.alarms_count = DT_INST_PROP(_num, alarms_count),                                  \
