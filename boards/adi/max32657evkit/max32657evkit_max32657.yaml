@@ -15,5 +15,6 @@ supported:
   - pwm
   - gpio
   - spi
+  - rtc
 ram: 128
 flash: 160

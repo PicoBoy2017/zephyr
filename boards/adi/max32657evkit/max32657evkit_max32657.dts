@@ -16,4 +16,15 @@
 		 zephyr,code-partition = &slot0_partition;
 		 zephyr,bt-hci = &bt_hci_max32;
 	 };
+
+	/* This alias is provided for compatibility with samples */
+	aliases {
+		rtc = &rtc;
+	};
+};
+
+&rtc {
+	status = "okay";
+	alarms-count = <1>;
+	clock-source = <ADI_MAX32_PRPH_CLK_SRC_INRO>;
 };
