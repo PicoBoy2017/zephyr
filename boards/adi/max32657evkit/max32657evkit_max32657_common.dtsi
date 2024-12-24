@@ -129,12 +129,6 @@
 	status = "okay";
 };
 
-&spi0 {
-	status = "okay";
-	pinctrl-0 = <&spi0_mosi_p0_2 &spi0_miso_p0_4 &spi0_sck_p0_6 &spi0_ss0_p0_3>;
-	pinctrl-names = "default";
-};
-
 &i3c0 {
 	status = "okay";
 	pinctrl-0  = <&i3c_scl_p0_0 &i3c_sda_p0_1>;
@@ -142,4 +136,35 @@
 	i2c-scl-hz = <DT_FREQ_K(200)>;
 	i3c-scl-hz = <DT_FREQ_K(800)>;
 	i3c-od-scl-hz = <DT_FREQ_K(400)>;
+};
+
+&spi0 {
+	status = "okay";
+	pinctrl-0 = <&spi0_mosi_p0_2 &spi0_miso_p0_4 &spi0_sck_p0_6 &spi0_ss0_p0_3>;
+	pinctrl-names = "default";
+
+	max30123: max30123@0 {
+		compatible = "adi,max30123";
+		reg = <0x0>;
+		status = "okay";
+		spi-max-frequency = <DT_FREQ_K(100)>;
+		auto-clk-div = <10240>;
+		daca-code = <1000>;
+		dacb-code = <1000>;
+		dac-enable;
+		we1-amp-enable;
+		we1-swb;
+		we1-ios_mode;
+		we1-offset-sel = <2>;
+		adc-fs-we1 = <1>;
+		gr1-enable;
+		m0-mode = <1>;
+		m1-mode = <1>;
+		m0-i-conv-type = <2>;
+		m0-conv-time = <5>;
+		m1-i-conv-type = <2>;
+		m1-conv-time = <5>;
+		auto;
+		convert;
+	};
 };
