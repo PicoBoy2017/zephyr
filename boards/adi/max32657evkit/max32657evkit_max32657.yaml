@@ -16,5 +16,6 @@ supported:
   - gpio
   - spi
   - rtc
+  - i3c
 ram: 128
 flash: 320

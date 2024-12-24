@@ -15,5 +15,6 @@ supported:
   - pwm
   - gpio
   - spi
+  - i3c
 ram: 128
 flash: 576
