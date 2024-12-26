@@ -115,6 +115,8 @@ Below interfaces are supported by Zephyr on MAX32657FPGA.
 +-----------+------------+-------------------------------------+
 | SPI       | on-chip    | spi                                 |
 +-----------+------------+-------------------------------------+
+| RTC       | on-chip    | Real Time Clock                     |
++-----------+------------+-------------------------------------+
 | TrustZone | on-chip    | Trusted Firmware-M                  |
 +-----------+------------+-------------------------------------+
 
@@ -419,37 +421,41 @@ by non-secure. All other peripehral is going to be accessible by NS world.
 The peripheral commented in ns_periph_arr array is not be accessible by NS world.
 
 uint8_t ns_periph_arr[] = {
-       SPC_GCR,
-       SPC_SIR,
-       SPC_FCR,
-       SPC_WDT,
-       SPC_AES,
-       SPC_AESKEY,
-       SPC_CRC,
-       SPC_GPIO0,
-       SPC_TIMER0,
-       SPC_TIMER1,
-       SPC_TIMER2,
-       SPC_TIMER3,
-       SPC_TIMER4,
-       SPC_TIMER5,
-       SPC_I3C,
-       SPC_UART,
-       SPC_SPI,
-       // SPC_TRNG,
-       SPC_BTLE_DBB,
-       SPC_BTLE_RFFE,
-       SPC_RSTZ,
-       SPC_BOOST,
-       SPC_BBSIR,
-       SPC_BBFCR,
-       SPC_RTC,
-       SPC_WUT0,
-       SPC_WUT1,
-       SPC_PWR,
-       SPC_MCR,
+
+|    SPC_GCR,
+|    SPC_SIR,
+|    SPC_FCR,
+|    SPC_WDT,
+|    SPC_AES,
+|    SPC_AESKEY,
+|    SPC_CRC,
+|    SPC_GPIO0,
+|    SPC_TIMER0,
+|    SPC_TIMER1,
+|    SPC_TIMER2,
+|    SPC_TIMER3,
+|    SPC_TIMER4,
+|    SPC_TIMER5,
+|    SPC_I3C,
+|    SPC_UART,
+|    SPC_SPI,
+|    // SPC_TRNG,
+|    SPC_BTLE_DBB,
+|    SPC_BTLE_RFFE,
+|    SPC_RSTZ,
+|    SPC_BOOST,
+|    SPC_BBSIR,
+|    SPC_BBFCR,
+|    SPC_RTC,
+|    SPC_WUT0,
+|    SPC_WUT1,
+|    SPC_PWR,
+|    SPC_MCR,
 };
 
+Note:
+TRNG and AES hardware blocks are required for TFM when ADI cryptographic library is
+enabled (by USE_ADI_UCL flag). In that case these peripherals' ownership stays on secure domain.
 
 Programming and Debugging
 *************************
