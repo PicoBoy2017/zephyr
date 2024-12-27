@@ -337,6 +337,12 @@ manifest:
       path: modules/crypto/tinycrypt
       groups:
         - crypto
+    - name: tf-m-tests
+      remote: adi-innersource
+      revision: c98ad943ecea2b5e1191d806161f73f25a1ad1a2
+      path: modules/tee/tf-m/tf-m-tests
+      groups:
+        - tee
     - name: trusted-firmware-m
       remote: adi-innersource
       revision: d77a278828920a2e90425fd12f12d92b3e36273b
