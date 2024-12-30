@@ -83,4 +83,14 @@ config BUILD_WITH_TFM
 	help
 	  Auto set WITH_TFM for a Non-Secure version of the board,
 
+config ADI_TESA
+	bool "Use ADI Cryptographics Library on TF-M"
+	default n
+	depends on BUILD_WITH_TFM
+	help
+	  Trusted Edge Security Architecture (TESA) is Analog Devices Inc. (ADI)
+	  security solution that provides a PSA certificated cryptographic library.
+	  If this flag has been enabled TF-M is going to use ADI crypto library
+	  instead of MBEDTLS.
+
 endif # SOC_FAMILY_MAX32

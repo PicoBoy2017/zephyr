@@ -18,6 +18,11 @@ set(TFM_VALID_PARTITIONS
 if (CONFIG_BUILD_WITH_TFM)
   # PSA API awareness for the Non-Secure application
   target_compile_definitions(app PRIVATE "TFM_PSA_API")
+
+  if (CONFIG_ADI_TESA)
+    list(APPEND TFM_CMAKE_ARGS -DADI_TESA:BOOL=ON)
+  endif()
+
   if (CONFIG_TFM_SFN)
     list(APPEND TFM_CMAKE_ARGS -DCONFIG_TFM_SPM_BACKEND="SFN")
   else() # CONFIG_TFM_IPC
