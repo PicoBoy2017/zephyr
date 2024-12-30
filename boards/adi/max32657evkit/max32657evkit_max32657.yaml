@@ -17,5 +17,5 @@ supported:
   - spi
   - rtc
   - i3c
-ram: 128
-flash: 320
+ram: 256
+flash: 960

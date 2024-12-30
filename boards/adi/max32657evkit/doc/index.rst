@@ -324,7 +324,7 @@ Connections and IOs
 
 
 Zephyr board options
-====================
+********************
 
 The MAX32657 microcontroller (MCU) is an advanced system-on-chip (SoC)
 featuring an ARM Cortex-M33 architecture that provides Trustzone technology
@@ -342,21 +342,66 @@ The BOARD options are summarized below:
 +-------------------------------+-------------------------------------------+
 
 
+BOARD: max32657evkit/max32657
+=============================
+
+Build the zephyr app for max32657evkit/max32657 board will generate secure firmware
+for zephyr. In this configuration 960KB of flash is used to store the code and 64KB
+is used for storage section. In this mode tf-m is off and secure mode flag is on
+``CONFIG_TRUSTED_EXECUTION_SECURE=y`` and ``CONFIG_BUILD_WITH_TFM=n``
+
++----------+------------------+---------------------------------+
+| Name     | Address[Size]    | Comment                         |
++==========+==================+=================================+
+| slot0    | 0x1000000[960k]  | Secure zephyr image             |
++----------+------------------+---------------------------------+
+| storage  | 0x10f0000[64k]   | File system, persistent storage |
++----------+------------------+---------------------------------+
+
+Here are the instructions to build zephyr with a non-secure configuration,
+using :zephyr:code-sample:`blinky` sample:
+
+   .. code-block:: bash
+
+      $ west build -b max32657evkit/max32657 samples/basic/blinky/ -p
+
+
+BOARD: max32657evkit/max32657/ns
+================================
+
+The max32657evkit/max32657/ns board configuration is used to build the secure firmware
+image using TF-M (``CONFIG_BUILD_WITH_TFM=y``) and the non-secure firmware image
+using Zephyr (``CONFIG_TRUSTED_EXECUTION_NONSECURE=y``).
+
+Here are the instructions to build zephyr with a non-secure configuration,
+using :zephyr:code-sample:`blinky` sample:
+
+   .. code-block:: bash
+
+      $ west build -b max32657evkit/max32657/ns samples/basic/blinky/ -p
+
+The above command will:
+ * Build a bootloader image (MCUboot)
+ * Build a TF-M (secure) firmware image
+ * Build Zephyr application as non-secure firmware image
+ * Merge them as ``tfm_merged.hex`` which contain all images.
+
 
 Memory mappings
-===============
+---------------
 
-There are multiple memory configurations, they all start from the
-MCUboot partitioning which looks like the table below
+MAX32657 1MB flash and 256KB RAM split to define section for MCUBoot,
+TF-M (S), Zephyr (NS) and storage that used for secure services and configurations.
+Default layout of MAX32657 is listed in below table.
 
 +----------+------------------+---------------------------------+
 | Name     | Address[Size]    | Comment                         |
 +==========+==================+=================================+
 | boot     | 0x1000000[64K]   | MCU Bootloader                  |
 +----------+------------------+---------------------------------+
-| slot0    | 0x1010000[320k]  | Secure image slot0              |
+| slot0    | 0x1010000[320k]  | Secure image slot0 (TF-M)       |
 +----------+------------------+---------------------------------+
-| slot0_ns | 0x1060000[576k]  | Non-secure image slot0          |
+| slot0_ns | 0x1060000[576k]  | Non-secure image slot0 (Zephyr) |
 +----------+------------------+---------------------------------+
 | slot1    | 0x10F0000[0k]    | Updates slot0 image             |
 +----------+------------------+---------------------------------+
@@ -365,25 +410,6 @@ MCUboot partitioning which looks like the table below
 | storage  | 0x10f0000[64k]   | File system, persistent storage |
 +----------+------------------+---------------------------------+
 
-Above table demonstrate default flash layout, the sections can be updated
-as per of target application.
-Additionally if firmware update feature requires slot1 and slot1_ns section need to be
-defined. On default the section size set as 0 due to firmware update not requires on default.
-
-Trusted Execution
-*****************
-
-+-----------+------------------+--------------------+
-| Memory    | Address[Size]    | Comment            |
-+===========+==================+====================+
-| MCUboot   | 0x1000000[64K]   | Secure bootloader  |
-+-----------+------------------+--------------------+
-| TFM_S     | 0x1060000[320k]  | Secure image       |
-+-----------+------------------+--------------------+
-| Zephyr_NS | 0x10F0000[576k]  | Non-Secure image   |
-+-----------+------------------+--------------------+
-| storage   | 0x10f0000[64k]   | Persistent storage |
-+-----------+------------------+--------------------+
 
 +----------------+------------------+-------------------+
 | RAM            | Address[Size]    | Comment           |
@@ -394,7 +420,7 @@ Trusted Execution
 +----------------+------------------+-------------------+
 
 
-Flash memory layout are defines both on zephyr and `Trusted Firmware M`_ (TF-M) project
+Flash memory layout are defines both on zephyr board file and `Trusted Firmware M`_ (TF-M) project
 these definition shall be match. Zephyr defines it in
 :zephyr_file:`boards/adi/max32657evkit/max32657evkit_max32657_common.dtsi`
 file under flash section. TF-M project define them in
@@ -402,9 +428,12 @@ file under flash section. TF-M project define them in
 If you would like to update flash region for your application you shall update related section in
 these files.
 
+Additionally if firmware update feature requires slot1 and slot1_ns section need to be
+defined. On default the section size set as 0 due to firmware update not requires on default.
+
 
 Peripherals and Memory Ownership
-********************************
+--------------------------------
 
 The ARM Security Extensions model allows system developers to partition device hardware and
 software resources, so that they exist in either the Secure world for the security subsystem,
@@ -455,9 +484,11 @@ uint8_t ns_periph_arr[] = {
 |    SPC_MCR,
 };
 
-Note:
-TRNG and AES hardware blocks are required for TFM when ADI cryptographic library is
-enabled (by USE_ADI_UCL flag). In that case these peripherals' ownership stays on secure domain.
+.. note::
+
+   TRNG and AES hardware blocks are required for TFM when ADI cryptographic library is
+   enabled (by USE_ADI_UCL flag). In that case these peripherals' ownership
+   stays on secure domain.
 
 Programming and Debugging
 *************************
@@ -488,11 +519,26 @@ The TF-M integration samples can be run using the
 the resulting image (``tfm_merged.hex``) with a J-Link as follows
 (reset and erase are for recovering a locked core):
 
-   .. code-block:: console
+.. zephyr-app-commands::
+   :zephyr-app: samples/hello_world
+   :board: max32657evkit/max32657/ns
+   :goals: build
+
+.. code-block:: console
 
       west flash --hex-file build/zephyr/tfm_merged.hex
 
-We need to reset the board manually after flashing the image to run this code.
+.. code-block:: console
+
+   [INF] Starting bootloader
+   [WRN] This device was provisioned with dummy keys. This device is NOT SECURE
+   [INF] PSA Crypto init done, sig_type: RSA-3072
+   [WRN] Cannot upgrade: slots have non-compatible sectors
+   [WRN] Cannot upgrade: slots have non-compatible sectors
+   [INF] Bootloader chainload address offset: 0x10000
+   [INF] Jumping to the first image slot
+   ***** Booting Zephyr OS build v4.0.0 *****
+   Hello World! max32657evkit/max32657/ns
 
 
 Debugging
