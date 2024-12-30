@@ -428,8 +428,21 @@ file under flash section. TF-M project define them in
 If you would like to update flash region for your application you shall update related section in
 these files.
 
-Additionally if firmware update feature requires slot1 and slot1_ns section need to be
-defined. On default the section size set as 0 due to firmware update not requires on default.
+Additionally, the firmware update feature requires slot1 and slot1_ns sections to be defined.
+Their section size set to 0 by default due to the firmware update feature not being included by default.
+
+
+Trusted Edge Security Architecture (TESA)
+-----------------------------------------
+
+Analog Devices Inc. (ADI) security offering for the Intelligent Edge is called
+"Trusted Edge Security Architecture" (TESA).
+The TESA offering provides the foundational layer of security for customers by binding
+industry-standard crypto APIs with the hardware accelerated security capabilities.
+ADI provides TESA solutions with TF-M, to use ADI TESA cryptographics APIs instead of MBEDTLS
+users need to set ``CONFIG_ADI_TESA=y`` flag on Zephyr side.
+If this flag has been enabled the default MBEDTLS crypto library is going to be replaced
+with TESA on TF-M.
 
 
 Peripherals and Memory Ownership
@@ -487,8 +500,8 @@ uint8_t ns_periph_arr[] = {
 .. note::
 
    TRNG and AES hardware blocks are required for TFM when ADI cryptographic library is
-   enabled (by USE_ADI_UCL flag). In that case these peripherals' ownership
-   stays on secure domain.
+   enabled (by ``CONFIG_ADI_TESA=y`` flag). When enabled, the ownership of the peripherals is
+   in the secure domain, and non-secure access is not allowed.
 
 Programming and Debugging
 *************************
