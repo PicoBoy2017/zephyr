@@ -41,6 +41,7 @@
 		led0 = &led1;
 		sw0 = &pb1;
 		watchdog0 = &wdt0;
+		rtc = &rtc;
 	};
 };
 
@@ -54,13 +55,6 @@
 };
 
 &clk_ipo {
-	status = "okay";
-};
-
-/*
- * ERTCO requires for RTC
- */
-&clk_ertco {
 	status = "okay";
 };
 
@@ -114,4 +108,19 @@
 		auto;
 		convert;
 	};
+};
+
+&i3c0 {
+	status = "okay";
+	pinctrl-0  = <&i3c_scl_p0_0 &i3c_sda_p0_1>;
+	pinctrl-names = "default";
+	i2c-scl-hz = <DT_FREQ_K(200)>;
+	i3c-scl-hz = <DT_FREQ_K(800)>;
+	i3c-od-scl-hz = <DT_FREQ_K(400)>;
+};
+
+&rtc {
+	status = "okay";
+	alarms-count = <1>;
+	clock-source = <ADI_MAX32_PRPH_CLK_SRC_INRO>;
 };
