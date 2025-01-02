@@ -15,6 +15,7 @@ supported:
   - pwm
   - gpio
   - spi
+  - counter
   - rtc
   - i3c
 ram: 128
