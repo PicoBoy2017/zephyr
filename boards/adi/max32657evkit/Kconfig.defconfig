@@ -37,6 +37,20 @@ choice TFM_PROFILE_TYPE
 	default TFM_PROFILE_TYPE_SMALL
 endchoice
 
+#
+# MAX32657 has one UART interface,
+# It can be used either on TFM or Zephyr
+# Enabling debug (TFM_SPM_LOG_LEVEL || TFM_PARTITION_LOG_LEVEL) will transfer it to the TFM side
+# Disabling TFM debug will transfer it to the Zephyr side.
+#
+choice TFM_SPM_LOG_LEVEL
+	default TFM_SPM_LOG_LEVEL_SILENCE
+endchoice
+
+choice TFM_PARTITION_LOG_LEVEL
+	default TFM_PARTITION_LOG_LEVEL_SILENCE
+endchoice
+
 config TFM_PARTITION_PROTECTED_STORAGE
 	default n
 
