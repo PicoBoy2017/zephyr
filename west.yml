@@ -315,7 +315,7 @@ manifest:
       path: modules/lib/openthread
     - name: packetcraft-adi
       remote: adi-innersource
-      revision: v0.0.4+a7c6c73f.20241219-libs
+      revision: 4263492cf23069eab33f1ddd9d2f9e29c51e8f39
       path: modules/hal/packetcraft-adi
       groups:
         - hal
