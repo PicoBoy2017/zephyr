@@ -17,6 +17,7 @@
 		zephyr,console = &uart0;
 		zephyr,shell-uart = &uart0;
 		zephyr,bt-c2h-uart = &uart0;
+		zephyr,bt-hci = &bt_hci_max32;
 	};
 
 	leds {

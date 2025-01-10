@@ -14,7 +14,6 @@
 		 zephyr,sram = &secure_ram;
 		 zephyr,flash = &flash0;
 		 zephyr,code-partition = &slot0_partition;
-		 zephyr,bt-hci = &bt_hci_max32;
 	 };
 
 	reserved-memory {
