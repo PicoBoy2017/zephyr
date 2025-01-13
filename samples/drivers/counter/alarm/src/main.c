@@ -55,6 +55,8 @@ struct counter_alarm_cfg alarm_cfg;
 #define TIMER DT_NODELABEL(timer)
 #elif defined(CONFIG_COUNTER_TIMER_MAX32)
 #define TIMER DT_NODELABEL(counter0)
+#elif defined(CONFIG_COUNTER_WUT_MAX32)
+#define TIMER DT_NODELABEL(counter0)
 #elif defined(CONFIG_COUNTER_RA_AGT)
 #define TIMER DT_NODELABEL(counter0)
 #else
