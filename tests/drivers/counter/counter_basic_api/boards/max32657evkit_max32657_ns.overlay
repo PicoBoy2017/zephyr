@@ -49,3 +49,18 @@
 		status = "okay";
 	};
 };
+
+&wut0 {
+	status = "okay";
+	counter {
+		status = "okay";
+	};
+};
+
+&wut1 {
+	status = "okay";
+	prescaler = <2>;
+	counter {
+		status = "okay";
+	};
+};

@@ -126,6 +126,9 @@ static const struct device *const devices[] = {
 #ifdef CONFIG_COUNTER_MCUX_LPTMR
 	DEVS_FOR_DT_COMPAT(nxp_lptmr)
 #endif
+#ifdef CONFIG_COUNTER_WUT_MAX32
+	DEVS_FOR_DT_COMPAT(adi_max32_wut)
+#endif
 };
 
 static const struct device *const period_devs[] = {
