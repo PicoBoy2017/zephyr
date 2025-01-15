@@ -345,7 +345,7 @@ manifest:
         - tee
     - name: trusted-firmware-m
       remote: adi-innersource
-      revision: 98497ae226d0e8b2c2d56716075022691139441a
+      revision: a2dbcd2d4a4dcd5c4c7ffbe55123d582a7bfdf32
       path: modules/tee/tf-m/trusted-firmware-m
       groups:
         - tee
