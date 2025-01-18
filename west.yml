@@ -142,7 +142,7 @@ manifest:
         - fs
     - name: hal_adi
       remote: analogdevicesinc
-      revision: dd1c525044e8db6dc37616a3a37fb52a7abe9ec1
+      revision: e68855b91a7b9065a4234a5e80220f4d95a95a1a
       path: modules/hal/adi
       groups:
         - hal
