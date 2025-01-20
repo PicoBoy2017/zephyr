@@ -125,7 +125,7 @@ properties:
                    and the RE1 pin.
     type: boolean
 
-  we1-ios_mode:
+  we1-ios-mode:
     description: |
           Offset current on we1 setting.
             false # Enables the offset current on WE1 only during ADC conversion.
