@@ -35,7 +35,7 @@ spi: &spi1 {
 		dac-enable;
 		we1-amp-enable;
 		we1-swb;
-		we1-ios_mode;
+		we1-ios-mode;
 		we1-offset-sel = <2>;
 		adc-fs-we1 = <1>;
 		gr1-enable;

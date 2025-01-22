@@ -20,8 +20,7 @@ static uint16_t curr_idx;
 int db_add_record(const cgm_measurement_t record)
 {
 	if (curr_idx >= MAX_NUM_RECORDS) {
-		LOG_ERR("Database full, cannot add record");
-		return -ENOMEM;
+		curr_idx = 0;
 	}
 
 	database[curr_idx] = record;

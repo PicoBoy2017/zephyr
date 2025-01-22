@@ -18,7 +18,7 @@ LOG_MODULE_REGISTER(ecs_monitor, LOG_LEVEL_INF);
 
 /*
  * This is the thread where you will define your process of analyzing and
- * making determiniations based on data returned from the electrochemical sensor.
+ * making determinations based on data returned from the electrochemical sensor.
  *
  * Saving a value to the glucose_concentration pointer will allow the CGM Service
  * to send the data to the connected client.
