@@ -40,20 +40,32 @@ K_TIMER_DEFINE(ecs_timer, interval_timer_expire, NULL);
 
 /* This is where you will calculate the glucose concentration */
 static void calculate_glocose_concentration(uint16_t *glucose_concentration,
-					    struct sensor_value val[2])
+					    struct sensor_value val)
 {
 	/* Arbitrary example */
-	static uint16_t baseline = 5;
-	uint16_t base = (uint16_t)(val[0].val1 + val[1].val1) / 2;
-	uint16_t scale = base / 4200;
+	uint16_t current = (uint16_t)((val.val1 * 128) /
+				      65536); /* Current calculation from MAX30123 datasheet */
 
-	*glucose_concentration = (uint16_t)(baseline * scale);
+	static const uint16_t min_in = 56; /* Minimum input in nA */
+	static const uint16_t max_in = 60; /* Maximum input in nA */
+	static const uint16_t input_range = max_in - min_in;
+
+	static const uint16_t min_out = 72;  /* Minimum output in mg/dL */
+	static const uint16_t max_out = 100; /* Maximum output in mg/dL */
+	static const uint16_t output_range = max_out - min_out;
+
+	/* Scale the current to in-range glucose values */
+	uint16_t measurement = min_out + ((current - min_in) * output_range) / input_range;
+
+	LOG_DBG("glucose_concentration: %dmg/dL", measurement);
+
+	*glucose_concentration = measurement;
 }
 
 static void monitor_ecs(void *p1, void *p2, void *p3)
 {
 	int err;
-	struct sensor_value val[2];
+	struct sensor_value val;
 	uint16_t *glucose_concentration = (uint16_t *)p1;
 
 	k_timer_start(&ecs_timer, K_MSEC(ECS_MONITOR_INTERVAL_MS), K_MSEC(ECS_MONITOR_INTERVAL_MS));
@@ -67,18 +79,10 @@ static void monitor_ecs(void *p1, void *p2, void *p3)
 			LOG_ERR("Failed to fetch (err: %d)", err);
 		}
 
-		err = sensor_channel_get(max30123_dev, SENSOR_CHAN_ECS_SEQUENCER_1, &val[0]);
+		err = sensor_channel_get(max30123_dev, SENSOR_CHAN_ECS_SEQUENCER_1, &val);
 		if (err) {
 			LOG_ERR("Failed to get sequencer 1 data (err: %d)", err);
 		}
-
-		err = sensor_channel_get(max30123_dev, SENSOR_CHAN_ECS_SEQUENCER_2, &val[1]);
-		if (err) {
-			LOG_ERR("Failed to get sequencer 2 data (err: %d)", err);
-		}
-
-		LOG_DBG("Sequencer 1: %d", val[0].val1);
-		LOG_DBG("Sequencer 2: %d", val[1].val1);
 
 		calculate_glocose_concentration(glucose_concentration, val);
 	}
