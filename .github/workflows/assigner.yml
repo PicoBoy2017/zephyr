@@ -41,12 +41,21 @@ jobs:
         done
 
     - name: Get Access Token
-      id: get_access_token
-      uses: adi-innersource/generate-github-app-token-action@v1
-      env:
-        GH_APP_PEM: ${{ secrets.GH_APP_PEM }}
-        GH_APP_ID: ${{ vars.GH_APP_ID }}
-        GH_APP_INSTALLATION_ID: ${{ vars.GH_APP_INSTALLATION_ID }}
+      id: generate-github-app-token
+      uses: adi-innersource/shared-actions/generate-github-token@v1
+      with:
+        app-id: ${{ secrets.TOKEN_GENERATOR_APP_ID }}
+        private-key: ${{ secrets.TOKEN_GENERATOR_APP_PRIVATE_KEY }}
+        organization: ${{ github.repository_owner }}
+        repositories: |
+          zephyr
+          zephyr-runner-configurations
+          hal_adi
+          packetcraft-adi
+          trusted-firmware-m
+          trusted-firmware-a
+          tf-m-tests
+          psa-arch-tests
 
     - name: Install Python dependencies
       run: |
@@ -58,7 +67,7 @@ jobs:
 
     - name: Run assignment script
       env:
-        GITHUB_TOKEN: ${{ env.generatedAccessToken }}
+        GITHUB_TOKEN: ${{ steps.generate-github-app-token.outputs.access-token }}
       run: |
         FLAGS="-v"
         FLAGS+=" -o ${{ github.event.repository.owner.login }}"

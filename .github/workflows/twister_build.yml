@@ -65,11 +65,21 @@ jobs:
           done
 
       - name: Get Access Token
-        uses: adi-innersource/generate-github-app-token-action@v1
-        env:
-          GH_APP_PEM: ${{ secrets.GH_APP_PEM }}
-          GH_APP_ID: ${{ vars.GH_APP_ID }}
-          GH_APP_INSTALLATION_ID: ${{ vars.GH_APP_INSTALLATION_ID }}
+        id: generate-github-app-token
+        uses: adi-innersource/shared-actions/generate-github-token@v1
+        with:
+          app-id: ${{ secrets.TOKEN_GENERATOR_APP_ID }}
+          private-key: ${{ secrets.TOKEN_GENERATOR_APP_PRIVATE_KEY }}
+          organization: ${{ github.repository_owner }}
+          repositories: |
+            zephyr
+            zephyr-runner-configurations
+            hal_adi
+            packetcraft-adi
+            trusted-firmware-m
+            trusted-firmware-a
+            tf-m-tests
+            psa-arch-tests
 
       - name: Apply container owner mismatch workaround
         run: |
@@ -93,6 +103,8 @@ jobs:
           persist-credentials: false
 
       - name: Environment Setup
+        env:
+          ACCESS_TOKEN: ${{ steps.generate-github-app-token.outputs.access-token }}
         run: |
           if [ "${{ github.event_name }}" = "pull_request_target" ]; then
             git config --global user.email "bot@zephyrproject.org"
@@ -104,7 +116,7 @@ jobs:
             git log  --pretty=oneline | head -n 10
           fi
           echo "$HOME/.local/bin" >> $GITHUB_PATH
-          git config --global url."https://${generatedAccessToken}:${generatedAccessToken}@github.com/".insteadOf "https://github.com/"
+          git config --global url."https://${ACCESS_TOKEN}:${ACCESS_TOKEN}@github.com/".insteadOf "https://github.com/"
           west init -l . || true
           west config manifest.group-filter -- +ci,+optional
           west config --global update.narrow true
