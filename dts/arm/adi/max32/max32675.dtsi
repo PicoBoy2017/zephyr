@@ -26,6 +26,7 @@
 
 /delete-node/ &clk_iso;
 /delete-node/ &uart1;
+/delete-node/ &rtc;
 
 /* MAX32675 extra peripherals. */
 / {
@@ -93,6 +94,13 @@
 			clocks = <&gcr ADI_MAX32_CLOCK_BUS2 0>;
 			clock-source = <ADI_MAX32_PRPH_CLK_SRC_PCLK>;
 			prescaler = <1>;
+		};
+
+		rtc: rtc@40106000 {
+			compatible = "adi,max32-rtc";
+			reg = <0x40106000 0x400>;
+			interrupts = <3 0>;
+			status = "disabled";
 		};
 	};
 };

@@ -26,6 +26,8 @@
 
 /delete-node/ &i2c2;
 
+/delete-node/ &rtc;
+
 &adc {
 	compatible = "adi,max32-adc-sar", "adi,max32-adc";
 	clock-source = <ADI_MAX32_PRPH_CLK_SRC_PCLK>;
@@ -117,6 +119,13 @@
 				compatible = "adi,max32-counter";
 				status = "disabled";
 			};
+		};
+
+		rtc: rtc@40106000 {
+			compatible = "adi,max32-rtc";
+			reg = <0x40106000 0x400>;
+			interrupts = <3 0>;
+			status = "disabled";
 		};
 	};
 };
