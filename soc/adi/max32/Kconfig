@@ -1,6 +1,6 @@
 # Analog Devices MAX32xxx MCU family
 
-# Copyright (c) 2023-2024 Analog Devices, Inc.
+# Copyright (c) 2023-2025 Analog Devices, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
 config SOC_FAMILY_MAX32
@@ -38,6 +38,7 @@ config SOC_FAMILY_MAX32_RV32
 	select RISCV_PRIVILEGED
 	select ATOMIC_OPERATIONS_C
 	select INCLUDE_RESET_VECTOR
+	imply XIP
 
 config SOC_MAX32655_M4
 	select MAX32_HAS_SECONDARY_RV32
