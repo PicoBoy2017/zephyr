@@ -3,6 +3,7 @@
 
 if(CONFIG_BOARD_MAX32657EVKIT_MAX32657_NS)
   set_property(TARGET runners_yaml_props_target PROPERTY hex_file tfm_merged.hex)
+  board_runner_args(openocd "--erase")
 endif()
 
 board_runner_args(jlink "--device=MAX32657" "--reset-after-load")
