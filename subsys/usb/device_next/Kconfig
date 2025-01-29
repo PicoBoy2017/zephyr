@@ -55,6 +55,12 @@ config USBD_MSG_WORK_DELAY
 	  Message work may need to be delayed because the device stack is not
 	  yet ready to publish the message. The delay unit is milliseconds.
 
+config USBD_ASSIGN_EP_AUTO
+	bool "USB device automatic endpoint assignment"
+	default y
+	help
+	  Enable USB device automatic endpoint assignment.
+
 rsource "class/Kconfig"
 
 endif # USB_DEVICE_STACK_NEXT

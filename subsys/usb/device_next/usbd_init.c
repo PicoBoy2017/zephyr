@@ -17,8 +17,6 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(usbd_init, CONFIG_USBD_LOG_LEVEL);
 
-/* TODO: Allow to disable automatic assignment of endpoint features */
-
 /* Assign endpoint address and update wMaxPacketSize */
 static int assign_ep_addr(const struct device *dev,
 			  struct usb_ep_descriptor *const ed,
@@ -31,10 +29,14 @@ static int assign_ep_addr(const struct device *dev,
 		uint16_t mps = sys_le16_to_cpu(ed->wMaxPacketSize);
 		uint8_t ep;
 
-		if (USB_EP_DIR_IS_IN(ed->bEndpointAddress)) {
-			ep = USB_EP_DIR_IN | idx;
+		if (IS_ENABLED(CONFIG_USBD_ASSIGN_EP_AUTO)) {
+			if (USB_EP_DIR_IS_IN(ed->bEndpointAddress)) {
+				ep = USB_EP_DIR_IN | idx;
+			} else {
+				ep = idx;
+			}
 		} else {
-			ep = idx;
+			ep = ed->bEndpointAddress;
 		}
 
 		if (usbd_ep_bm_is_set(config_ep_bm, ep) ||
@@ -55,6 +57,10 @@ static int assign_ep_addr(const struct device *dev,
 			usbd_ep_bm_set(config_ep_bm, ed->bEndpointAddress);
 
 			return 0;
+		} else {
+			if (!IS_ENABLED(CONFIG_USBD_ASSIGN_EP_AUTO)) {
+				return ret;
+			}
 		}
 	}
 
