@@ -21,6 +21,24 @@ config USBD_CDC_ACM_STACK_SIZE
 	help
 	  USB CDC ACM workqueue stack size.
 
+config USBD_CDC_ACM_IF0_INT_EP
+	hex "USB CDC ACM interrupt IN endpoint address" if !USBD_ASSIGN_EP_AUTO
+	default 0x81
+	help
+	  USB CDC ACM interrupt IN endpoint address.
+
+config USBD_CDC_ACM_IF1_IN_EP
+	hex "USB CDC ACM bulk IN endpoint address" if !USBD_ASSIGN_EP_AUTO
+	default 0x82
+	help
+	  USB CDC ACM bulk IN endpoint address.
+
+config USBD_CDC_ACM_IF1_OUT_EP
+	hex "USB CDC ACM bulk OUT endpoint address" if !USBD_ASSIGN_EP_AUTO
+	default 0x01
+	help
+	  USB CDC ACM bulk OUT endpoint address.
+
 module = USBD_CDC_ACM
 module-str = usbd cdc_acm
 default-count = 1

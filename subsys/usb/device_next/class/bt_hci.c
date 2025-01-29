@@ -46,11 +46,11 @@ LOG_MODULE_REGISTER(bt_hci, CONFIG_USBD_BT_HCI_LOG_LEVEL);
  * the resources may be reallocated by the stack depending on the number
  * of functions in a configuration and the properties of the controller.
  */
-#define BT_HCI_EP_EVENTS		0x81
-#define BT_HCI_EP_ACL_DATA_IN		0x82
-#define BT_HCI_EP_ACL_DATA_OUT		0x02
-#define BT_HCI_EP_VOICE_IN		0x83
-#define BT_HCI_EP_VOICE_OUT		0x03
+#define BT_HCI_EP_EVENTS			CONFIG_USBD_BT_HCI_EP_EVENTS
+#define BT_HCI_EP_ACL_DATA_IN		CONFIG_USBD_BT_HCI_EP_ACL_DATA_IN
+#define BT_HCI_EP_ACL_DATA_OUT		CONFIG_USBD_BT_HCI_EP_ACL_DATA_OUT
+#define BT_HCI_EP_VOICE_IN			CONFIG_USBD_BT_HCI_EP_VOICE_IN
+#define BT_HCI_EP_VOICE_OUT			CONFIG_USBD_BT_HCI_EP_VOICE_OUT
 
 #define BT_HCI_EP_MPS_EVENTS		16
 #define BT_HCI_EP_FS_MPS_ACL_DATA	64

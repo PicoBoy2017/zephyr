@@ -33,6 +33,10 @@ LOG_MODULE_REGISTER(usbd_msc, CONFIG_USBD_MSC_LOG_LEVEL);
 #define CBW_FLAGS_DIRECTION_IN		0x80
 #define CBW_FLAGS_RESERVED_MASK		0x3F
 
+/* Get enpoind addresses from Kconfig parameters */
+#define MSC_EP_IN	CONFIG_USBD_MSC_IF0_IN_EP
+#define MSC_EP_OUT	CONFIG_USBD_MSC_IF0_OUT_EP
+
 struct CBW {
 	uint32_t dCBWSignature;
 	uint32_t dCBWTag;
@@ -801,7 +805,7 @@ static struct msc_bot_desc msc_bot_desc_##n = {					\
 	.if0_in_ep = {								\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x81,					\
+		.bEndpointAddress = MSC_EP_IN,					\
 		.bmAttributes = USB_EP_TYPE_BULK,				\
 		.wMaxPacketSize = sys_cpu_to_le16(64U),				\
 		.bInterval = 0,							\
@@ -809,7 +813,7 @@ static struct msc_bot_desc msc_bot_desc_##n = {					\
 	.if0_out_ep = {								\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x01,					\
+		.bEndpointAddress = MSC_EP_OUT,					\
 		.bmAttributes = USB_EP_TYPE_BULK,				\
 		.wMaxPacketSize = sys_cpu_to_le16(64U),				\
 		.bInterval = 0,							\
@@ -817,7 +821,7 @@ static struct msc_bot_desc msc_bot_desc_##n = {					\
 	.if0_hs_in_ep = {							\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x81,					\
+		.bEndpointAddress = MSC_EP_IN,					\
 		.bmAttributes = USB_EP_TYPE_BULK,				\
 		.wMaxPacketSize = sys_cpu_to_le16(512U),			\
 		.bInterval = 0,							\
@@ -825,7 +829,7 @@ static struct msc_bot_desc msc_bot_desc_##n = {					\
 	.if0_hs_out_ep = {							\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x01,					\
+		.bEndpointAddress = MSC_EP_OUT,					\
 		.bmAttributes = USB_EP_TYPE_BULK,				\
 		.wMaxPacketSize = sys_cpu_to_le16(512U),			\
 		.bInterval = 0,							\

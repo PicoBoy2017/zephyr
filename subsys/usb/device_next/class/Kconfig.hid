@@ -30,6 +30,30 @@ config USBD_HID_INIT_PRIORITY
 	help
 	  HID device initialization priority
 
+config USBD_HID_IF0_IN_EP
+	hex "USB HID interrupt IN endpoint address" if !USBD_ASSIGN_EP_AUTO
+	default 0x81
+	help
+	  USB HID interrupt IN endpoint address.
+
+config USBD_HID_IF0_OUT_EP
+	hex "USB HID interrupt OUT endpoint address" if !USBD_ASSIGN_EP_AUTO
+	default 0x01
+	help
+	  USB HID interrupt OUT endpoint address.
+
+config USBD_HID_IF0_1_ALT_IN_EP
+	hex "USB HID alternate interface interrupt IN endpoint address" if !USBD_ASSIGN_EP_AUTO
+	default 0x81
+	help
+	  USB HID alternate interface interrupt IN endpoint address.
+
+config USBD_HID_IF0_1_ALT_OUT_EP
+	hex "USB HID alternate interface interrupt OUT endpoint address" if !USBD_ASSIGN_EP_AUTO
+	default 0x01
+	help
+	  USB HID alternate interface interrupt OUT endpoint address.
+
 module = USBD_HID
 module-str = usbd hid
 source "subsys/logging/Kconfig.template.log_config"

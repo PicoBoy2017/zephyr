@@ -25,6 +25,16 @@ static uint8_t lb_buf[1024];
 #define LB_ISO_EP_MPS			256
 #define LB_ISO_EP_INTERVAL		1
 
+/* Get enpoind addresses from Kconfig parameters */
+#define LB_IF0_EP_OUT			CONFIG_USBD_LOOPBACK_IF0_OUT_EP
+#define LB_IF0_EP_IN			CONFIG_USBD_LOOPBACK_IF0_IN_EP
+#define LB_IF1_EP_INT_OUT		CONFIG_USBD_LOOPBACK_IF1_INT_OUT_EP
+#define LB_IF1_EP_INT_IN		CONFIG_USBD_LOOPBACK_IF1_INT_IN_EP
+#define LB_IF2_EP_ISO_OUT		CONFIG_USBD_LOOPBACK_IF2_ISO_OUT_EP
+#define LB_IF2_EP_ISO_IN		CONFIG_USBD_LOOPBACK_IF2_ISO_IN_EP
+#define LB_IF2_1_EP_ISO_OUT		CONFIG_USBD_LOOPBACK_IF2_1_ISO_OUT_EP
+#define LB_IF2_1_EP_ISO_IN		CONFIG_USBD_LOOPBACK_IF2_1_ISO_IN_EP
+
 /* Make supported vendor request visible for the device stack */
 static const struct usbd_cctx_vendor_req lb_vregs =
 	USBD_VENDOR_REQ(LB_VENDOR_REQ_OUT, LB_VENDOR_REQ_IN);
@@ -184,7 +194,7 @@ static struct loopback_desc lb_desc_##x = {					\
 	.if0_out_ep = {								\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x01,					\
+		.bEndpointAddress = LB_IF0_EP_OUT,				\
 		.bmAttributes = USB_EP_TYPE_BULK,				\
 		.wMaxPacketSize = sys_cpu_to_le16(64U),				\
 		.bInterval = 0x00,						\
@@ -194,7 +204,7 @@ static struct loopback_desc lb_desc_##x = {					\
 	.if0_in_ep = {								\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x81,					\
+		.bEndpointAddress = LB_IF0_EP_IN,				\
 		.bmAttributes = USB_EP_TYPE_BULK,				\
 		.wMaxPacketSize = sys_cpu_to_le16(64U),				\
 		.bInterval = 0x00,						\
@@ -204,7 +214,7 @@ static struct loopback_desc lb_desc_##x = {					\
 	.if0_hs_out_ep = {							\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x01,					\
+		.bEndpointAddress = LB_IF0_EP_OUT,				\
 		.bmAttributes = USB_EP_TYPE_BULK,				\
 		.wMaxPacketSize = sys_cpu_to_le16(512),				\
 		.bInterval = 0x00,						\
@@ -214,7 +224,7 @@ static struct loopback_desc lb_desc_##x = {					\
 	.if0_hs_in_ep = {							\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x81,					\
+		.bEndpointAddress = LB_IF0_EP_IN,				\
 		.bmAttributes = USB_EP_TYPE_BULK,				\
 		.wMaxPacketSize = sys_cpu_to_le16(512),				\
 		.bInterval = 0x00,						\
@@ -237,7 +247,7 @@ static struct loopback_desc lb_desc_##x = {					\
 	.if1_int_out_ep = {							\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x02,					\
+		.bEndpointAddress = LB_IF1_EP_INT_OUT,				\
 		.bmAttributes = USB_EP_TYPE_INTERRUPT,				\
 		.wMaxPacketSize = sys_cpu_to_le16(64),				\
 		.bInterval = 0x01,						\
@@ -247,7 +257,7 @@ static struct loopback_desc lb_desc_##x = {					\
 	.if1_int_in_ep = {							\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x82,					\
+		.bEndpointAddress = LB_IF1_EP_INT_IN,				\
 		.bmAttributes = USB_EP_TYPE_INTERRUPT,				\
 		.wMaxPacketSize = sys_cpu_to_le16(64),				\
 		.bInterval = 0x01,						\
@@ -268,7 +278,7 @@ static struct loopback_desc lb_desc_##x = {					\
 	.if2_0_iso_in_ep = {							\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x83,					\
+		.bEndpointAddress = LB_IF2_EP_ISO_IN,				\
 		.bmAttributes = USB_EP_TYPE_ISO,				\
 		.wMaxPacketSize = sys_cpu_to_le16(0),				\
 		.bInterval = LB_ISO_EP_INTERVAL,				\
@@ -277,7 +287,7 @@ static struct loopback_desc lb_desc_##x = {					\
 	.if2_0_iso_out_ep = {							\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x03,					\
+		.bEndpointAddress = LB_IF2_EP_ISO_OUT,				\
 		.bmAttributes = USB_EP_TYPE_ISO,				\
 		.wMaxPacketSize = sys_cpu_to_le16(0),				\
 		.bInterval = LB_ISO_EP_INTERVAL,				\
@@ -298,7 +308,7 @@ static struct loopback_desc lb_desc_##x = {					\
 	.if2_1_iso_in_ep = {							\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x83,					\
+		.bEndpointAddress = LB_IF2_1_EP_ISO_IN,				\
 		.bmAttributes = USB_EP_TYPE_ISO,				\
 		.wMaxPacketSize = sys_cpu_to_le16(LB_ISO_EP_MPS),		\
 		.bInterval = LB_ISO_EP_INTERVAL,				\
@@ -307,7 +317,7 @@ static struct loopback_desc lb_desc_##x = {					\
 	.if2_1_iso_out_ep = {							\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x03,					\
+		.bEndpointAddress = LB_IF2_1_EP_ISO_OUT,			\
 		.bmAttributes = USB_EP_TYPE_ISO,				\
 		.wMaxPacketSize = sys_cpu_to_le16(LB_ISO_EP_MPS),		\
 		.bInterval = LB_ISO_EP_INTERVAL,				\

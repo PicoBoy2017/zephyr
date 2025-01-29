@@ -28,6 +28,36 @@ config USBD_BT_HCI_RX_THREAD_PRIORITY
 	help
 	  Bluetooth HCI USB Transport Layer RX thread priority.
 
+config USBD_BT_HCI_EP_EVENTS
+	hex "USB BT HCI interrupt IN endpoint address" if !USBD_ASSIGN_EP_AUTO
+	default 0x81
+	help
+	  USB BT HCI interrupt IN endpoint address.
+
+config USBD_BT_HCI_EP_ACL_DATA_IN
+	hex "USB BT HCI bulk IN endpoint address" if !USBD_ASSIGN_EP_AUTO
+	default 0x82
+	help
+	  USB BT HCI bulk IN endpoint address.
+
+config USBD_BT_HCI_EP_ACL_DATA_OUT
+	hex "USB BT HCI bulk OUT endpoint address" if !USBD_ASSIGN_EP_AUTO
+	default 0x02
+	help
+	  USB BT HCI bulk OUT endpoint address.
+
+config USBD_BT_HCI_EP_VOICE_IN
+	hex "USB BT HCI isochronous IN endpoint address" if !USBD_ASSIGN_EP_AUTO
+	default 0x83
+	help
+	  USB BT HCI isochronous IN endpoint address.
+
+config USBD_BT_HCI_EP_VOICE_OUT
+	hex "USB BT HCI isochronous OUT endpoint address" if !USBD_ASSIGN_EP_AUTO
+	default 0x03
+	help
+	  USB BT HCI isochronous OUT endpoint address.
+
 module = USBD_BT_HCI
 module-str = usbd bt hci
 source "subsys/logging/Kconfig.template.log_config"

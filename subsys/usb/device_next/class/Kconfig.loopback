@@ -9,6 +9,55 @@ config USBD_LOOPBACK_CLASS
 	  Primarily used for test and development purposes.
 
 if USBD_LOOPBACK_CLASS
+
+config USBD_LOOPBACK_IF0_IN_EP
+	hex "USB Loopback bulk IN endpoint address" if !USBD_ASSIGN_EP_AUTO
+	default 0x81
+	help
+	  USB Loopback bulk IN endpoint address.
+
+config USBD_LOOPBACK_IF0_OUT_EP
+	hex "USB Loopback bulk OUT endpoint address" if !USBD_ASSIGN_EP_AUTO
+	default 0x01
+	help
+	  USB Loopback bulk OUT endpoint address.
+
+config USBD_LOOPBACK_IF1_INT_IN_EP
+	hex "USB Loopback interrupt IN endpoint address" if !USBD_ASSIGN_EP_AUTO
+	default 0x82
+	help
+	  USB Loopback interrupt IN endpoint address.
+
+config USBD_LOOPBACK_IF1_INT_OUT_EP
+	hex "USB Loopback interrupt OUT endpoint address" if !USBD_ASSIGN_EP_AUTO
+	default 0x02
+	help
+	  USB Loopback interrupt OUT endpoint address.
+
+config USBD_LOOPBACK_IF2_ISO_IN_EP
+	hex "USB Loopback isochronous IN endpoint address" if !USBD_ASSIGN_EP_AUTO
+	default 0x83
+	help
+	  USB Loopback isochronous IN endpoint address.
+
+config USBD_LOOPBACK_IF2_ISO_OUT_EP
+	hex "USB Loopback isochronous OUT endpoint address" if !USBD_ASSIGN_EP_AUTO
+	default 0x03
+	help
+	  USB Loopback isochronous OUT endpoint address.
+
+config USBD_LOOPBACK_IF2_1_ISO_IN_EP
+	hex "USB Loopback alternate interface isochronous IN endpoint address" if !USBD_ASSIGN_EP_AUTO
+	default 0x83
+	help
+	  USB Loopback alternate interface isochronous IN endpoint address.
+
+config USBD_LOOPBACK_IF2_1_ISO_OUT_EP
+	hex "USB Loopback alternate interface isochronous OUT endpoint address" if !USBD_ASSIGN_EP_AUTO
+	default 0x03
+	help
+	  USB Loopback alternate interface isochronous OUT endpoint address.
+
 module = USBD_LOOPBACK
 module-str = usbd loopback
 default-count = 1

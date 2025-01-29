@@ -165,11 +165,25 @@
 	(sys_cpu_to_le16(USB_TPL_TO_MPS(DT_INST_PROP(n, in_report_size)))),	\
 	(sys_cpu_to_le16(MIN(DT_INST_PROP(n, in_report_size), 64U))))
 
+/*
+ * OUT endpoint address for either default or alternate interface.
+ */
+#define HID_EP_OUT_ADDR(alt)							\
+	COND_CODE_1(alt,							\
+	(CONFIG_USBD_HID_IF0_1_ALT_OUT_EP), (CONFIG_USBD_HID_IF0_OUT_EP))
+
+/*
+ * IN endpoint address for either default or alternate interface.
+ */
+#define HID_EP_IN_ADDR(alt)							\
+	COND_CODE_1(alt,							\
+	(CONFIG_USBD_HID_IF0_1_ALT_IN_EP), (CONFIG_USBD_HID_IF0_IN_EP))
+
 #define HID_OUT_EP_DEFINE(n, hs, alt)						\
 	{									\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x01,					\
+		.bEndpointAddress = HID_EP_OUT_ADDR(alt),			\
 		.bmAttributes = USB_EP_TYPE_INTERRUPT,				\
 		.wMaxPacketSize = HID_OUT_EP_MPS(n, alt),			\
 		.bInterval = HID_OUT_EP_INTERVAL(n, hs),			\
@@ -179,7 +193,7 @@
 	{									\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x81,					\
+		.bEndpointAddress = HID_EP_IN_ADDR(alt),			\
 		.bmAttributes = USB_EP_TYPE_INTERRUPT,				\
 		.wMaxPacketSize = HID_IN_EP_MPS(n, alt),			\
 		.bInterval = HID_IN_EP_INTERVAL(n, hs),				\

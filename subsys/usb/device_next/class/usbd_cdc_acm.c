@@ -51,6 +51,11 @@ UDC_BUF_POOL_DEFINE(cdc_acm_ep_pool,
 #define CDC_ACM_RX_FIFO_BUSY		4
 #define CDC_ACM_TX_FIFO_BUSY		5
 
+/* Get enpoind addresses from Kconfig parameters */
+#define CDC_ACM_EP_INT	CONFIG_USBD_CDC_ACM_IF0_INT_EP
+#define CDC_ACM_EP_IN	CONFIG_USBD_CDC_ACM_IF1_IN_EP
+#define CDC_ACM_EP_OUT	CONFIG_USBD_CDC_ACM_IF1_OUT_EP
+
 static struct k_work_q cdc_acm_work_q;
 static K_KERNEL_STACK_DEFINE(cdc_acm_stack,
 			     CONFIG_USBD_CDC_ACM_STACK_SIZE);
@@ -1144,7 +1149,7 @@ static struct usbd_cdc_acm_desc cdc_acm_desc_##n = {				\
 	.if0_int_ep = {								\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x81,					\
+		.bEndpointAddress = CDC_ACM_EP_INT,				\
 		.bmAttributes = USB_EP_TYPE_INTERRUPT,				\
 		.wMaxPacketSize = sys_cpu_to_le16(CDC_ACM_DEFAULT_INT_EP_MPS),	\
 		.bInterval = CDC_ACM_FS_INT_EP_INTERVAL,			\
@@ -1153,7 +1158,7 @@ static struct usbd_cdc_acm_desc cdc_acm_desc_##n = {				\
 	.if0_hs_int_ep = {							\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x81,					\
+		.bEndpointAddress = CDC_ACM_EP_INT,				\
 		.bmAttributes = USB_EP_TYPE_INTERRUPT,				\
 		.wMaxPacketSize = sys_cpu_to_le16(CDC_ACM_DEFAULT_INT_EP_MPS),	\
 		.bInterval = CDC_ACM_HS_INT_EP_INTERVAL,			\
@@ -1174,7 +1179,7 @@ static struct usbd_cdc_acm_desc cdc_acm_desc_##n = {				\
 	.if1_in_ep = {								\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x82,					\
+		.bEndpointAddress = CDC_ACM_EP_IN,				\
 		.bmAttributes = USB_EP_TYPE_BULK,				\
 		.wMaxPacketSize = sys_cpu_to_le16(64U),				\
 		.bInterval = 0,							\
@@ -1183,7 +1188,7 @@ static struct usbd_cdc_acm_desc cdc_acm_desc_##n = {				\
 	.if1_out_ep = {								\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x01,					\
+		.bEndpointAddress = CDC_ACM_EP_OUT,				\
 		.bmAttributes = USB_EP_TYPE_BULK,				\
 		.wMaxPacketSize = sys_cpu_to_le16(64U),				\
 		.bInterval = 0,							\
@@ -1192,7 +1197,7 @@ static struct usbd_cdc_acm_desc cdc_acm_desc_##n = {				\
 	.if1_hs_in_ep = {							\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x82,					\
+		.bEndpointAddress = CDC_ACM_EP_IN,				\
 		.bmAttributes = USB_EP_TYPE_BULK,				\
 		.wMaxPacketSize = sys_cpu_to_le16(512U),			\
 		.bInterval = 0,							\
@@ -1201,7 +1206,7 @@ static struct usbd_cdc_acm_desc cdc_acm_desc_##n = {				\
 	.if1_hs_out_ep = {							\
 		.bLength = sizeof(struct usb_ep_descriptor),			\
 		.bDescriptorType = USB_DESC_ENDPOINT,				\
-		.bEndpointAddress = 0x01,					\
+		.bEndpointAddress = CDC_ACM_EP_OUT,				\
 		.bmAttributes = USB_EP_TYPE_BULK,				\
 		.wMaxPacketSize = sys_cpu_to_le16(512U),			\
 		.bInterval = 0,							\
