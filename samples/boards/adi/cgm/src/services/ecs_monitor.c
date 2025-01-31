@@ -39,7 +39,7 @@ static void interval_timer_expire(struct k_timer *timer)
 K_TIMER_DEFINE(ecs_timer, interval_timer_expire, NULL);
 
 /* This is where you will calculate the glucose concentration */
-static void calculate_glocose_concentration(uint16_t *glucose_concentration,
+static void calculate_glucose_concentration(uint16_t *glucose_concentration,
 					    struct sensor_value val)
 {
 	/* Arbitrary example */
@@ -84,7 +84,7 @@ static void monitor_ecs(void *p1, void *p2, void *p3)
 			LOG_ERR("Failed to get sequencer 1 data (err: %d)", err);
 		}
 
-		calculate_glocose_concentration(glucose_concentration, val);
+		calculate_glucose_concentration(glucose_concentration, val);
 	}
 }
 
