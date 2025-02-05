@@ -26,7 +26,7 @@ jobs:
     uses: ./.github/workflows/twister_build_prep.yml
     with:
       runner: zephyr-16-core-large
-      image: ghcr.io/zephyrproject-rtos/ci-repo-cache:v0.26.13.20240601
+      image: ghcr.io/zephyrproject-rtos/ci-repo-cache:v0.27.4.20241026
       options: --entrypoint /bin/bash
       zephyr_sdk_install_dir: /opt/toolchains/zephyr-sdk-0.16.8
     secrets: inherit
@@ -60,7 +60,7 @@ jobs:
       name: Board ${{ matrix.board }}
       runner: ${{ matrix.runner }}
       board: ${{ matrix.board }}
-      image: ghcr.io/zephyrproject-rtos/ci-repo-cache:v0.26.13.20240601
+      image: ghcr.io/zephyrproject-rtos/ci-repo-cache:v0.27.4.20241026
       options: --entrypoint /bin/bash
       zephyr_sdk_install_dir: /opt/toolchains/zephyr-sdk-0.16.8
       twister_common: --force-color --inline-logs -v -N -M --retry-failed 3 --timeout-multiplier 3 -T samples/hello_world/ -T samples/basic/ -T samples/philosophers/ -T tests/lib/cpp/ -T samples/subsys/portability/cmsis_rtos_v2/ -T samples/boards/adi/cgm/
